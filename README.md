@@ -1,8 +1,8 @@
 # Unique
 
-project to unify all my project in one place with GUI using tkinter
-contain incoming:
+project to unify all my project in one place with GUI using tkinter.
 
+incoming:
 mini games:
   tic tac toe
   puissance 4
