@@ -1,33 +1,4 @@
-"""
-MASTER MIND
-
-l'ordi choisit un mot dans une liste
-
-TANT QUE mot pas trouver ou trop de tour:
-    copie = mot a trouver
-    in_good = 0
-    in_bad = 0
-    out = 0
-    le joueur rentre une combinaison de lettre
-        verif que l'input
-            que des lettre
-            autant de lettre que dans le mot a trouver
-
-    SI verif:
-        pour chaque lettre de l'utilisateur
-            SI presente dans copie mot a trouver
-                bien placer +1
-                mal placer +0
-            enlever la lettre de la copie
-
-            SINON
-                pas presente +0
-
-        indiquer au joueur combien de lettre son bonne et bien placé (in_good)
-                                                bonne et mal placé (in_bad)
-                                                pas bonne(out)
-"""
-import random 
+import random
 
 
 def master_mind():
