@@ -47,7 +47,9 @@ def relance_jeu():
 
 
 def print_pos_letter(in_good, in_bad, out):
-    return f'- - - - -\nlettre bien placé(s): {in_good}\nlettre mal placé(s): {in_bad}\nlettre pas dans le mot: {out}\n- - - - -'
+    return f'- - - - -\nlettre bien placé(s): {in_good}\
+        \nlettre mal placé(s): {in_bad}\
+        \nlettre pas dans le mot: {out}\n- - - - -'
 
 
 def print_word_used(list_of_words):
@@ -66,7 +68,8 @@ def verify_letter_placement(letter, letter_compare):
 
 def verify_a_word(word, word_compare):
     """
-    compare la longueur de deux mots, si le premier est composé de lettre et sans espace
+    compare la longueur de deux mots,
+    si le premier est composé de lettre et sans espace
     """
     good_lenght = len(word) == len(word_compare)
     good_char = word.isalpha()
