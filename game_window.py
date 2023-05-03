@@ -3,22 +3,25 @@ from tkinter import Toplevel
 import morpion as mp
 
 
-class Game_window(Toplevel):
+class GameChoiceWindow(Toplevel):
     """
-    lance la fenetre de choix de jeu
+    Game Choice Window
     """
 
     def __init__(self, master):
-        # creer une nouvelle fenetre
+        """
+        master: tkinter window
+        """
+        # new window TopLevel
         Toplevel.__init__(self, master)
         self.master = master
-        # cache la fenetre principale
+        # hide main window
         self.master.withdraw()
-        # si la fenetre est ferme declenche la func
+        # associate event with function
         self.bind("<Destroy>", self.on_destroy)
 
         self.geometry("500x200+600+400")
-        # titre
+        # title
         self.title("Choix du jeu")
         self.frame_title = tk.Frame(self)
         self.frame_title.pack()
@@ -27,7 +30,7 @@ class Game_window(Toplevel):
         )
         self.label_title.pack()
 
-        # boutton
+        # button
         self.frame_button = tk.Frame(self)
         self.frame_button.pack()
 
@@ -43,11 +46,12 @@ class Game_window(Toplevel):
 
     def on_destroy(self, event):
         """
-        lorsque la fenetre courante est fermée
-        affiche a la fenetre principale
+        re draw the main window
         """
         if event.widget == self:
             self.master.deiconify()
 
     def display_morpion(self):
-        self.window_game = mp.Morpion(self)
+        # self.window_game = mp.Morpion(self)
+        mp.Morpion(self)
+
