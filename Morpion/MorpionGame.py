@@ -2,7 +2,9 @@ import pygame
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, master):
+        self.master = master
+        master.withdraw()
         size = 600
         self.width = size
         self.height = size
@@ -27,6 +29,7 @@ class Game:
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.master.deiconify()
                 self.running = False
 
         # add numpad key detector to change display
