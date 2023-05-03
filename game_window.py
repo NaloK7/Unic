@@ -54,4 +54,3 @@ class GameChoiceWindow(Toplevel):
     def display_morpion(self):
         # self.window_game = mp.Morpion(self)
         mp.Morpion(self)
-

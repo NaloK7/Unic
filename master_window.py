@@ -13,8 +13,8 @@ class MasterWindow(tk.Tk):
         super().__init__()
         # self.eval('tk::PlaceWindow . center')
         # size and placement on screen
-        self.geometry("500x200+600+400")
-
+        self.geometry("500x300+600+400")
+        self.resizable(width=False, height=False)
         # window's name
         self.title("Unique")
 
