@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import Toplevel
-import morpion as mp
 import pygame
 from Morpion import MorpionGame
 
@@ -59,5 +58,3 @@ class GameChoiceWindow(Toplevel):
         # game_screen = pygame.display.set_mode((600,600))
         game = MorpionGame.Game(self)
         game.run()
-
-        pygame.quit()
