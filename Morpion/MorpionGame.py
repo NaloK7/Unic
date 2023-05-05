@@ -8,6 +8,8 @@ class Game:
         self.current_path = os.getcwd()
         self.master = master
         self.master.withdraw()
+
+        # window
         self.color_line = "grey"
         self.size = 600
         self.width = self.size
@@ -16,20 +18,22 @@ class Game:
         self.third_height = int(self.size // 3)
         self.screen = pygame.display.set_mode((self.width, self.height))
 
-        # groupe de sprite
+        # sprite groupe
         self.sprite_group = pygame.sprite.Group()
 
         self.running = True
         self.clock = pygame.time.Clock()
-
-        # game himself
         self.counter = 0
+
+        # player
         self.player_X = ("X", f"{self.current_path}\Morpion\crossWhite.png")
         self.player_O = ("O", f"{self.current_path}\Morpion\circleWhite.png")
         self.current_player = self.player_O
+
         self.game_matrice = self.newMatrix()
         self.win_line = ""
-        self.restart_image_path = (None, f"{self.current_path}\Morpion\\restart.png")
+
+        self.restart_image_path = f"{self.current_path}\Morpion\\restart.png"
         self.win_line_path = f"{self.current_path}\Morpion\greenLine.png"
         self.end_game = False
 
@@ -37,7 +41,7 @@ class Game:
 
     def manageEvents(self):
         """
-        check if event append
+        check QUIT / mouse click / restart
         """
 
         for event in pygame.event.get():
@@ -65,26 +69,41 @@ class Game:
         """
         y: line
         x: column
+        check input validity and victory or end
         """
         if self.game_matrice[y][x] is None:
             self.game_matrice[y][x] = self.current_player[0]
-            self.sprite(x, y)
+            self.sprite(self.current_player[1], x, y)
             self.counter += 1
             self.checkVictory()
-            if self.checkVictory() or self.counter == 9:
-                self.current_player = self.restart_image_path
-                if self.checkVictory():
-                    self.EndLineSprite()
-                self.sprite(1, 1)
-                self.end_game = True
+            self.endDisplay()
+        else:
+            pass
+
+    def endDisplay(self):
+        """
+        display win line and/or restart image
+        """
+        if self.checkVictory() or self.counter == 9:
+            # self.current_player = self.restart_image_path
+            if self.checkVictory():
+                self.EndLineSprite()
+            self.sprite(self.restart_image_path, 1, 1, 0, "restart")
+            self.end_game = True
         else:
             pass
 
     @staticmethod
     def newMatrix():
+        """
+        create an empty matrix 3x3
+        """
         return [[None] * 3 for _ in range(3)]
 
     def restart(self):
+        """
+        reset variable and board to make a new game
+        """
         self.end_game = False
         self.counter = 0
         self.sprite_group.empty()
@@ -181,12 +200,13 @@ class Game:
         else:
             x, y, r = 1, 1, -45  # d2
 
-        sprite_line = ms(self.win_line_path, x, y, self.size, rotate=r)
-        self.sprite_group.add(sprite_line)
+        self.sprite(self.win_line_path, x, y, r, "line")
 
-    # noinspection PyTypeChecker
-    def sprite(self, pos_x: int, pos_y: int):
-        new_sprite = ms(self.current_player[1], pos_x, pos_y, self.size)
+    def sprite(self, path: str, pos_x: int, pos_y: int, r=0, type_is="player"):
+        """
+        create a sprite with: path, x, y, rotation, personal type(line/restart/player)
+        """
+        new_sprite = ms(path, pos_x, pos_y, self.size, r, type_is)
         self.sprite_group.add(new_sprite)
 
     def grid(self):
