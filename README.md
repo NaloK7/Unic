@@ -1,6 +1,6 @@
 # Unique
 
-launch main.py to test
+launch unique.py to test
 
 work in progress:  
 Morpion OK
