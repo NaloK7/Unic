@@ -1,11 +1,10 @@
 import pygame
-import sys
 from Morpion.Sprite import MorpionSprite as ms
 import os
 
+
 class Game:
     def __init__(self, master):
-    # def __init__(self):
         self.current_path = os.getcwd()
         self.master = master
         self.master.withdraw()
@@ -61,6 +60,7 @@ class Game:
             if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] and self.end_game:
                 self.restart()
 
+    # noinspection PyTypeChecker
     def checkInputPos(self, x: int, y: int):
         """
         y: line
@@ -72,15 +72,16 @@ class Game:
             self.counter += 1
             self.checkVictory()
             if self.checkVictory() or self.counter == 9:
+                self.current_player = self.restart_image_path
                 if self.checkVictory():
-                    self.convertEndLinePos()
-                    self.current_player = self.restart_image_path
-                    self.sprite(1, 1)
+                    self.EndLineSprite()
+                self.sprite(1, 1)
                 self.end_game = True
         else:
             pass
 
-    def newMatrix(self):
+    @staticmethod
+    def newMatrix():
         return [[None] * 3 for _ in range(3)]
 
     def restart(self):
@@ -95,7 +96,8 @@ class Game:
                 or self.checkVertical()
                 or self.diagonal_win())
 
-    def checkLine(self, line: list):
+    @staticmethod
+    def checkLine(line: list):
         """
         take a liste in argument
         check if all element are the same and not empty
@@ -159,7 +161,8 @@ class Game:
             return True
         return False
 
-    def convertEndLinePos(self):
+    # noinspection PyTypeChecker
+    def EndLineSprite(self):
 
         if self.win_line == "L0":
             x, y, r = 1, 0, 90
@@ -181,6 +184,7 @@ class Game:
         sprite_line = ms(self.win_line_path, x, y, self.size, rotate=r)
         self.sprite_group.add(sprite_line)
 
+    # noinspection PyTypeChecker
     def sprite(self, pos_x: int, pos_y: int):
         new_sprite = ms(self.current_player[1], pos_x, pos_y, self.size)
         self.sprite_group.add(new_sprite)
@@ -220,4 +224,3 @@ class Game:
         if not self.running:
             self.master.deiconify()
             pygame.quit()
-
