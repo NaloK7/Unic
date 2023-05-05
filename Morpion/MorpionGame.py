@@ -29,7 +29,9 @@ class Game:
         self.player_O = ("O", f"{self.current_path}\Morpion\circleWhite.png")
         self.current_player = self.player_O
         self.game_matrice = self.newMatrix()
-
+        self.win_line = ""
+        self.restart_image_path = (None, f"{self.current_path}\Morpion\\restart.png")
+        self.win_line_path = f"{self.current_path}\Morpion\greenLine.png"
         self.end_game = False
 
         # self.run()
@@ -46,7 +48,7 @@ class Game:
                 # pygame.quit()
 
             # left click on mouse
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0] and not self.end_game:
                 # get mouse's position
                 mouse_pos = pygame.mouse.get_pos()
                 # real pos
@@ -56,19 +58,25 @@ class Game:
                 mouse_y = mouse_y//self.third_width
                 self.checkInputPos(mouse_x, mouse_y)
 
-                if self.end_game:
-                    self.restart()
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] and self.end_game:
+                self.restart()
 
     def checkInputPos(self, x: int, y: int):
         """
         y: line
         x: column
         """
-
         if self.game_matrice[y][x] is None:
             self.game_matrice[y][x] = self.current_player[0]
             self.sprite(x, y)
             self.counter += 1
+            self.checkVictory()
+            if self.checkVictory() or self.counter == 9:
+                if self.checkVictory():
+                    self.convertEndLinePos()
+                    self.current_player = self.restart_image_path
+                    self.sprite(1, 1)
+                self.end_game = True
         else:
             pass
 
@@ -83,13 +91,11 @@ class Game:
         self.game_matrice = self.newMatrix()
 
     def checkVictory(self):
-        return (
-                self.horizontal_win()
-                or self.vertical_win()
-                or self.diagonal_win()
-        )
+        return (self.checkHorizontal()
+                or self.checkVertical()
+                or self.diagonal_win())
 
-    def win_line(self, line: list):
+    def checkLine(self, line: list):
         """
         take a liste in argument
         check if all element are the same and not empty
@@ -105,16 +111,21 @@ class Game:
                 return False
         return True
 
-    def horizontal_win(self):
+    def checkHorizontal(self):
         """
         check line victory in matrix
         """
-        for line in self.game_matrice:
-            if self.win_line(line):
+        for i in range(len(self.game_matrice)):
+            if self.checkLine(self.game_matrice[i]):
+                self.win_line = f"L{i}"
                 return True
         return False
+        # for line in self.game_matrice:
+        #     if self.win_line(line):
+        #         return True
+        # return False
 
-    def vertical_win(self):
+    def checkVertical(self):
         """
         check column victory in matrix
         """
@@ -122,7 +133,8 @@ class Game:
             column_check = []
             for line in self.game_matrice:
                 column_check.append(line[i])
-            if self.win_line(column_check):
+            if self.checkLine(column_check):
+                self.win_line = f"C{i}"
                 return True
         return False
 
@@ -139,11 +151,37 @@ class Game:
 
             # par du coin haut droit et descend en diag
             diag_2.append(self.game_matrice[i][-i - 1])
-        if self.win_line(diag_1) or self.win_line(diag_2):
+        if self.checkLine(diag_1):
+            self.win_line = "D1"
+            return True
+        if self.checkLine(diag_2):
+            self.win_line = "D2"
             return True
         return False
 
-    def sprite(self, pos_x, pos_y):
+    def convertEndLinePos(self):
+
+        if self.win_line == "L0":
+            x, y, r = 1, 0, 90
+        elif self.win_line == "L1":
+            x, y, r = 1, 1, 90
+        elif self.win_line == "L2":
+            x, y, r = 1, 2, 90
+        elif self.win_line == "C0":
+            x, y, r = 0, 1, 0
+        elif self.win_line == "C1":
+            x, y, r = 1, 1, 0
+        elif self.win_line == "C2":
+            x, y, r = 2, 1, 0
+        elif self.win_line == "D1":
+            x, y, r = 1, 1, 45
+        else:
+            x, y, r = 1, 1, -45  # d2
+
+        sprite_line = ms(self.win_line_path, x, y, self.size, rotate=r)
+        self.sprite_group.add(sprite_line)
+
+    def sprite(self, pos_x: int, pos_y: int):
         new_sprite = ms(self.current_player[1], pos_x, pos_y, self.size)
         self.sprite_group.add(new_sprite)
 
@@ -172,9 +210,6 @@ class Game:
     def run(self):
         while self.running:
             self.manageEvents()
-            if self.checkVictory():
-                self.end_game = True
-
             if self.counter % 2 == 0:
                 self.current_player = self.player_O
             else:
