@@ -1,11 +1,9 @@
 # Unique
 
-project to unify all my project in one place with GUI using tkinter.
+launch main.py to test
 
-incoming:
-mini games:
-  tic tac toe
-  puissance 4
-  master mind
-  
-file encode / decode
+work in progress:  
+Morpion OK
+
+
+(next: puissance4)
