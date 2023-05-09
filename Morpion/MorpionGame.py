@@ -1,5 +1,6 @@
 import pygame
 from Morpion.Sprite import MorpionSprite as ms
+from Morpion.player import Player
 import os
 
 
@@ -7,15 +8,12 @@ class Game:
     def __init__(self, master):
         self.current_path = os.getcwd()
         self.master = master
-        self.master.withdraw()
 
         # window
-        self.color_line = "grey"
         self.size = 600
         self.width = self.size
         self.height = self.size
-        self.third_width = int(self.size // 3)
-        self.third_height = int(self.size // 3)
+
         self.screen = pygame.display.set_mode((self.width, self.height))
 
         # sprite groupe
@@ -26,8 +24,8 @@ class Game:
         self.counter = 0
 
         # player
-        self.player_X = ("X", f"{self.current_path}\Morpion\crossWhite.png")
-        self.player_O = ("O", f"{self.current_path}\Morpion\circleWhite.png")
+        self.player_X = Player("X", f"{self.current_path}\Morpion\crossWhite.png")
+        self.player_O = Player("O", f"{self.current_path}\Morpion\circleWhite.png")
         self.current_player = self.player_O
 
         self.game_matrice = self.newMatrix()
@@ -56,9 +54,9 @@ class Game:
                 mouse_pos = pygame.mouse.get_pos()
                 # real pos
                 mouse_x, mouse_y = mouse_pos
-                # convert pos
-                mouse_x = mouse_x//self.third_width
-                mouse_y = mouse_y//self.third_width
+                # convert pos to 0 / 1
+                mouse_x = mouse_x//(self.width//3)
+                mouse_y = mouse_y//(self.height//3)
                 self.checkInputPos(mouse_x, mouse_y)
 
             if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] and self.end_game:
@@ -72,8 +70,8 @@ class Game:
         check input validity and victory or end
         """
         if self.game_matrice[y][x] is None:
-            self.game_matrice[y][x] = self.current_player[0]
-            self.sprite(self.current_player[1], x, y)
+            self.game_matrice[y][x] = self.current_player.symbole
+            self.sprite(self.current_player.pict_path, x, y)
             self.counter += 1
             self.checkVictory()
             self.endDisplay()
@@ -213,14 +211,15 @@ class Game:
         """
         draw grid line
         """
+        color_line = "grey"
         for x in range(0, 4):
-            pygame.draw.line(self.screen, self.color_line,
-                             (0, x * self.third_width),
-                             (self.width, x * self.third_width), 10)
+            pygame.draw.line(self.screen, color_line,
+                             (0, x * (self.width//3)),
+                             (self.width, x * (self.height//3)), 10)
 
-            pygame.draw.line(self.screen, self.color_line,
-                             (x * self.third_height, 0),
-                             (x * self.third_height, self.height), 10)
+            pygame.draw.line(self.screen, color_line,
+                             (x * (self.width//3), 0),
+                             (x * (self.height//3), self.height), 10)
 
     def display(self):
         """
@@ -232,6 +231,7 @@ class Game:
         pygame.display.flip()
 
     def run(self):
+        self.master.withdraw()
         while self.running:
             self.manageEvents()
             if self.counter % 2 == 0:
