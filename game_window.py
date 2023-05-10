@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import Toplevel
 import pygame
-from Morpion import MorpionGame
+from Morpion import MorpionGame as mg
+from Puissance_4 import Puissance4Game as pg
 
 
 class GameChoiceWindow(Toplevel):
@@ -38,8 +39,7 @@ class GameChoiceWindow(Toplevel):
         self.morpion_button = tk.Button(self.frame_button, text="MORPION", command=self.display_morpion)
         self.morpion_button.pack(side="left")
 
-        self.puissance4_button = tk.Button(
-            self.frame_button, text="PUISSANCE 4")
+        self.puissance4_button = tk.Button(self.frame_button, text="PUISSANCE 4", command=self.display_puissan4)
         self.puissance4_button.pack(side="left")
 
         self.motus_button = tk.Button(self.frame_button, text="MOTUS")
@@ -53,8 +53,12 @@ class GameChoiceWindow(Toplevel):
             self.master.deiconify()
 
     def display_morpion(self):
-        # self.window_game = mp.Morpion(self)
         pygame.init()
-        # game_screen = pygame.display.set_mode((600,600))
-        game = MorpionGame.Game(self)
+        game = mg.Game(self)
         game.run()
+
+    def display_puissan4(self):
+        pygame.init()
+        game = pg.GamePuissance4(self)
+        game.run()
+

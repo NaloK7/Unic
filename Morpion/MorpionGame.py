@@ -1,6 +1,6 @@
 import pygame
-from Morpion.Sprite import MorpionSprite as ms
-from Morpion.player import Player
+from Morpion.morpion_sprite import MorpionSprite as ms
+from player import Player
 import os
 
 
@@ -28,14 +28,14 @@ class Game:
         self.player_O = Player("O", f"{self.current_path}\Morpion\circleWhite.png")
         self.current_player = self.player_O
 
-        self.game_matrice = self.newMatrix()
+        self.game_matrice = self.matrixMorpion()
         self.win_line = ""
 
         self.restart_image_path = f"{self.current_path}\Morpion\\restart.png"
         self.win_line_path = f"{self.current_path}\Morpion\greenLine.png"
-        self.end_game = False
+        self.reset = False
 
-        # self.run()
+        # self.run()Z
 
     def manageEvents(self):
         """
@@ -49,7 +49,7 @@ class Game:
                 # pygame.quit()
 
             # left click on mouse
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0] and not self.end_game:
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0] and not self.reset:
                 # get mouse's position
                 mouse_pos = pygame.mouse.get_pos()
                 # real pos
@@ -59,7 +59,7 @@ class Game:
                 mouse_y = mouse_y//(self.height//3)
                 self.checkInputPos(mouse_x, mouse_y)
 
-            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] and self.end_game:
+            if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2] and self.reset:
                 self.restart()
 
     # noinspection PyTypeChecker
@@ -87,12 +87,12 @@ class Game:
             if self.checkVictory():
                 self.EndLineSprite()
             self.sprite(self.restart_image_path, 1, 1, 0, "restart")
-            self.end_game = True
+            self.reset = True
         else:
             pass
 
-    @staticmethod
-    def newMatrix():
+
+    def matrixMorpion(self):
         """
         create an empty matrix 3x3
         """
@@ -102,19 +102,19 @@ class Game:
         """
         reset variable and board to make a new game
         """
-        self.end_game = False
+        self.reset = False
         self.counter = 0
         self.sprite_group.empty()
         self.screen.fill("black")
-        self.game_matrice = self.newMatrix()
+        self.game_matrice = self.matrixMorpion()
 
     def checkVictory(self):
         return (self.checkHorizontal()
                 or self.checkVertical()
                 or self.diagonal_win())
 
-    @staticmethod
-    def checkLine(line: list):
+
+    def checkLine(self, line: list):
         """
         take a liste in argument
         check if all element are the same and not empty
@@ -227,7 +227,6 @@ class Game:
         """
         self.grid()
         self.sprite_group.draw(self.screen)
-        self.sprite_group.update()
         pygame.display.flip()
 
     def run(self):

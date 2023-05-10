@@ -20,13 +20,15 @@ class MorpionSprite(pygame.sprite.Sprite):
 
         elif type_is == "line":
             length = max_size//3
+            self.image = pygame.transform.scale(self.image, (24, max_size-25))
             self.image = pygame.transform.rotate(self.image, rotate)
             self.rect = self.image.get_rect()
             self.rect.center = [pos_x * length + length // 2, pos_y * length + length // 2]
 
         elif type_is == "restart":
-            length = max_size // 2
+            length = 250
             image_size = (length, length)
             self.image = pygame.transform.scale(self.image, image_size)
             self.rect = self.image.get_rect()
-            self.rect.center = [length, length]
+
+            self.rect.center = [max_size // 2, max_size // 2]
