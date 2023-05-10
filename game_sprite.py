@@ -4,20 +4,16 @@ import pygame
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, path, width, height):
         super().__init__()
-        self.pict = pygame.image.load(path)
+        self.image = pygame.image.load(path)
         self.width_max = width
         self.height_max = height
 
 # background / restart
 
 
-class FixedSprite(pygame.sprite.Sprite):
+class FixedSprite(GameSprite):
     def __init__(self, path, width, height, restart=False):
-        print(width, "x", height)
-        super().__init__()
-        self.image = pygame.image.load(path)
-        self.width_max = width
-        self.height_max = height
+        super().__init__(path, width, height)
         if restart:
             length = 250
             self.image = pygame.transform.scale(self.image, (length, length))
@@ -38,9 +34,9 @@ class Puissance4Sprite(GameSprite):
         # A REVOIR
         width = self.width_max // 7
         height = self.height_max // 6
-        self.pict = pygame.transform.scale(self.pict, (width - 20, height - 20))
+        self.image = pygame.transform.scale(self.image, (width - 20, height - 20))
 
-        self.rect = self.pict.get_rect()
+        self.rect = self.image.get_rect()
 
         # center of image is center of window
         x = (x * width + width) // 2
