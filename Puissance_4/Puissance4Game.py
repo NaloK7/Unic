@@ -9,19 +9,25 @@ class GamePuissance4:
         self.current_path = os.getcwd()
         self.master = master
 
-        self.width = 800
+        self.width = 700
         self.height = 600
         self.screen = pg.display.set_mode((self.width, self.height))
 
+        self.sprite_group = pg.sprite.Group()
+
         self.bg_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\background.png", self.width, self.height)
+        self.sprite_group.add(self.bg_sprite)
+
         self.front_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\blue_grid.png", self.width, self.height)
+        self.sprite_group.add(self.front_sprite)
+
         self.restart_sprite = gs.FixedSprite(f"{self.current_path}\\restart.png", self.width, self.height, restart=True)
+
 
         self.player_y = Player("y", f"{self.current_path}\Puissance_4\yellow_token.png")
         self.player_r = Player("r", f"{self.current_path}\Puissance_4\\red_token.png")
         self.current_player = self.player_y
 
-        self.sprite_group = pg.sprite.Group()
         self.game_matrix = self.matrixPuissance()
         self.counter = 0
         self.counter_max = 42
@@ -83,10 +89,10 @@ class GamePuissance4:
     # noinspection PyMethodMayBeStatic
     def display(self):
         # background
-        self.bg_sprite.draw(self.screen)
+        self.sprite_group.draw(self.screen)
         # token group
         # blue grid image
-        self.front_sprite.draw(self.screen)
+
         pg.display.flip()
 
     def run(self):

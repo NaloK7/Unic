@@ -11,17 +11,21 @@ class GameSprite(pygame.sprite.Sprite):
 # background / restart
 
 
-class FixedSprite(GameSprite):
+class FixedSprite(pygame.sprite.Sprite):
     def __init__(self, path, width, height, restart=False):
-        super().__init__(path, width, height)
+        print(width, "x", height)
+        super().__init__()
+        self.image = pygame.image.load(path)
+        self.width_max = width
+        self.height_max = height
         if restart:
             length = 250
-            self.pict = pygame.transform.scale(self.pict, (length, length))
+            self.image = pygame.transform.scale(self.image, (length, length))
         else:
             # image scale to max size of window
-            self.pict = pygame.transform.scale(self.pict, (self.width_max, self.height_max))
+            self.image = pygame.transform.scale(self.image, (self.width_max, self.height_max))
 
-        self.rect = self.pict.get_rect()
+        self.rect = self.image.get_rect()
 
         # center of image is center of window
         self.rect.center = [self.width_max//2, self.height_max//2]
