@@ -73,7 +73,6 @@ class Game:
             self.game_matrice[y][x] = self.current_player.symbole
             self.sprite(self.current_player.pict_path, x, y)
             self.counter += 1
-            self.checkVictory()
             self.endDisplay()
         else:
             pass
@@ -83,7 +82,6 @@ class Game:
         display win line and/or restart image
         """
         if self.checkVictory() or self.counter == 9:
-            # self.current_player = self.restart_image_path
             if self.checkVictory():
                 self.EndLineSprite()
             self.sprite(self.restart_image_path, 1, 1, 0, "restart")

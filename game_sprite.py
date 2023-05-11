@@ -2,7 +2,7 @@ import pygame
 
 
 class GameSprite(pygame.sprite.Sprite):
-    def __init__(self, path, width, height):
+    def __init__(self, path: str, width: int, height: int):
         super().__init__()
         self.image = pygame.image.load(path)
         self.width_max = width
@@ -12,7 +12,7 @@ class GameSprite(pygame.sprite.Sprite):
 
 
 class FixedSprite(GameSprite):
-    def __init__(self, path, width, height, restart=False):
+    def __init__(self, path: str, width: int, height: int, restart=False):
         super().__init__(path, width, height)
         if restart:
             length = 250
@@ -29,19 +29,38 @@ class FixedSprite(GameSprite):
 
 # puissance 4 token
 class Puissance4Sprite(GameSprite):
-    def __init__(self, path, width, height, x, y):
+    """
+    path: path of image
+    width: width of window
+    height: height of window
+    x: x coord of sprite
+    y: y coord of sprite
+    """
+    def __init__(self, path: str, width: int, height: int, x: int, y_max: int):
         super().__init__(path, width, height)
         # A REVOIR
         width = self.width_max // 7
         height = self.height_max // 6
+        self.y_max = y_max * height + height // 2
+
         self.image = pygame.transform.scale(self.image, (width - 20, height - 20))
 
         self.rect = self.image.get_rect()
 
         # center of image is center of window
-        x = (x * width + width) // 2
-        y = (y * height + height) // 2
-        self.rect.center = [x, y]
+        self.x = x * width + width // 2
+        self.y = 0
+        # y = y * height + height // 2
+        self.rect.center = [self.x, self.y]
+
+    def update(self):
+        speed = 20
+        if self.y < self.y_max:
+            self.y += speed
+            self.rect = self.image.get_rect()
+            self.rect.center = [self.x, self.y]
+        # else:
+        #     self.y_max =
 
 # class GameSprite(pygame.sprite.Sprite):
 #     def __init__(self, path: str, wmax: int, hmax: int, x=0, y=0, r=0):

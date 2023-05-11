@@ -6,9 +6,9 @@ class Morpion(Toplevel):
     def __init__(self, game_master):
         Toplevel.__init__(self, game_master)
         self.game_master = game_master
-        # cache la fenetre principale
+        # cache la fenêtre principale
         self.game_master.withdraw()
-        # si la fenetre est ferme declenche la func
+        # si la fenêtre est ferme déclenche la func
         self.bind("<Destroy>", self.on_destroy)
 
         self.geometry("500x200+600+400")
@@ -23,8 +23,8 @@ class Morpion(Toplevel):
 
     def on_destroy(self, event):
         """
-        lorsque la fenetre courante est fermée
-        affiche a la fenetre principale
+        When current window is closed
+        redraw the main window
         """
         if event.widget == self:
             self.master.deiconify()

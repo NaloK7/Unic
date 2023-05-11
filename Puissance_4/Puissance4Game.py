@@ -16,13 +16,8 @@ class GamePuissance4:
         self.sprite_group = pg.sprite.Group()
 
         self.bg_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\background.png", self.width, self.height)
-        self.sprite_group.add(self.bg_sprite)
-
         self.front_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\blue_grid.png", self.width, self.height)
-        self.sprite_group.add(self.front_sprite)
-
         self.restart_sprite = gs.FixedSprite(f"{self.current_path}\\restart.png", self.width, self.height, restart=True)
-
 
         self.player_y = Player("y", f"{self.current_path}\Puissance_4\yellow_token.png")
         self.player_r = Player("r", f"{self.current_path}\Puissance_4\\red_token.png")
@@ -30,7 +25,7 @@ class GamePuissance4:
 
         self.game_matrix = self.matrixPuissance()
         self.counter = 0
-        self.counter_max = 42
+        self.counter_max = 42  # Modify
         self.running = True
         self.reset = False
         self.clock = pg.time.Clock()
@@ -42,12 +37,9 @@ class GamePuissance4:
         """
         return [[None] * 7 for _ in range(6)]
 
-    def addSpriteToGroup(self, path, width, height, x=-1, y=-1, r=0):
-        # center by default
-        if x == -1:
-            x = width // 2
-            y = height // 2
-        sprite = gs.FixedSprite(path, width, height, x, y, r)
+    def addSpriteToGroup(self, path, x, y_max):
+
+        sprite = gs.Puissance4Sprite(path, self.width, self.height, x, y_max)
         # noinspection PyTypeChecker
         self.sprite_group.add(sprite)
 
@@ -59,40 +51,181 @@ class GamePuissance4:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.running = False
-                # self.master.deiconify()
-                # pygame.quit()
 
             # left click on mouse
             if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[0] and not self.reset:
-                # # get mouse's position
-                # mouse_pos = pg.mouse.get_pos()
-                # # real pos
-                # mouse_x, mouse_y = mouse_pos
-                # # convert pos to 0 / 1
-                # mouse_x = mouse_x // (self.width // 3)
-                # mouse_y = mouse_y // (self.height // 3)
-                # self.checkInputPos(mouse_x, mouse_y)
-                self.counter += 10
-                if self.counter > self.counter_max:
+                # get mouse's position
+                mouse_pos = pg.mouse.get_pos()
+                # real pos
+                mouse_x, mouse_y = mouse_pos
+                # convert pos to 0 / 1
+                mouse_x = mouse_x // (self.width // 7)
+                mouse_y = mouse_y // (self.height // 6)
+                self.checkInputPos(mouse_x, mouse_y)
+
+                if self.counter >= self.counter_max:
                     self.reset = True
 
             if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[2] and self.reset:
                 self.restart()
 
+    def checkInputPos(self, x: int, y: int):
+        """
+        y: line
+        x: column
+        check input validity and victory or end
+        """
+        if self.ColumnIsNotFull(y):  # Modify: you can click on token to put yours on top if there is space above
+            # put y in last possible position
+            y_max = self.bottomMax(x)
+            # add player symbol to matrix
+            self.game_matrix[y_max][x] = self.current_player.symbole  #
+            # add sprite to group
+            self.addSpriteToGroup(self.current_player.pict_path, x, y_max)  #
+            self.counter += 1
+            # reduire la matrice
+            matrix = self.reduce_board()
+            # la verifie
+            if self.victory(matrix):
+                print("victory")
+
+                self.reset = True
+            # self.endDisplay()  ##
+        else:
+            pass
+
+    def victory(self, matrix):
+        """
+        Reduce matrix and check victory
+        """
+
+        return (self.line_win(matrix)
+                or self.columnWim(matrix)
+                or self.diagonal_win(matrix))
+
+    def reduce_colomn(self, matrix):
+        copy_board = []
+        for i in range(len(matrix[0])):
+            column = []
+            for j in range(len(matrix)):
+                column.append(matrix[j][i])
+            if set(column) is not None:
+                copy_board.append(column)
+        return copy_board
+
+    def reduce_line(self):
+        copy_board = []
+        for ligne in self.game_matrix:
+            if set(ligne) is not None:
+                copy_board.append(ligne[:])
+        return copy_board
+
+    def reduce_board(self):
+        copy_board = self.reduce_line()
+        copy_board = self.reduce_colomn(copy_board)
+        for x in range(len(copy_board)):
+            for y in range(len(copy_board[x])):
+                if copy_board[x][y] is None:
+                    copy_board[x][y] = " "
+        return copy_board
+
+    def line_win(self, matrix):
+        for line in matrix:
+            if self.current_player.symbole * 4 in "".join(line):
+                print("line")
+                return True
+        return False
+
+    def columnWim(self, matrix):
+        for i in range(len(matrix[0])):
+            column = []
+            for j in range(len(matrix)):
+                column.append(matrix[j][i])
+            if self.current_player.symbole * 4 in "".join(column):
+                print("column")
+                return True
+        return False
+
+    def diagonal_win(self, matrix):
+        """
+        prend une matrice en parametre
+        verifie si une diagonale est composée des meme caractere et sans espace
+        """
+        for j in range(
+                round(len(matrix[0]) / 2)):  # boucle sur une longueur de ligne / 2
+            d1 = []
+            d2 = []
+            for i in range(len(matrix)):  # colonne
+                if i + j < len(matrix[0]):
+                    # part du coin haut gauche et descend en diag
+                    d1.append(matrix[i][i + j])
+                    # part du coin haut droit et descend en diag
+                    d2.append(matrix[i][-(i + j) - 1])
+            if self.line_win([d1, d2]):
+                print("diag1")
+                return True
+
+        for j in range(1, round(len(matrix) / 3)):
+            d3 = []
+            d4 = []
+            for i in range(len(matrix[0])):
+                if i + j < len(matrix):
+                    d3.append(matrix[j + i][i])
+                    d4.append(matrix[j + i][-i - 1])
+            if self.line_win([d3, d4]):
+                print("diag2")
+                return True
+
+        return False
+
+    def ColumnIsNotFull(self, y):
+        """
+        return boolean state of column fullness
+        """
+        if self.game_matrix[0][y] is None:
+            return True
+        else:
+            return False
+
+    def bottomMax(self, x):
+        """
+        return last pos possible in column
+        """
+
+        for i in range(len(self.game_matrix)):
+            # si la case regarder est vide, on garde l'index en memoire
+            if self.game_matrix[i][x] is None:
+                y_max = i
+            else:
+                break
+
+        return y_max
+
     def restart(self):
         self.reset = False
         self.counter = 0
         self.sprite_group.empty()
-        self.screen.fill("black")
+        self.screen.blit(self.bg_sprite.image, self.bg_sprite.rect)
+        self.screen.blit(self.front_sprite.image, self.front_sprite.rect)
         self.game_matrix = self.matrixPuissance()
+
+    def displayRestartImage(self):
+        self.screen.blit(self.restart_sprite.image, self.restart_sprite.rect)
 
     # noinspection PyMethodMayBeStatic
     def display(self):
         # background
-        self.sprite_group.draw(self.screen)
+        self.screen.blit(self.bg_sprite.image, self.bg_sprite.rect)
         # token group
-        # blue grid image
 
+        for sprite in self.sprite_group:
+
+            sprite.update()
+        self.sprite_group.draw(self.screen)
+        # blue grid image
+        self.screen.blit(self.front_sprite.image, self.front_sprite.rect)
+        if self.reset:
+            self.displayRestartImage()
         pg.display.flip()
 
     def run(self):
