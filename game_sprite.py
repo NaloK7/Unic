@@ -54,11 +54,14 @@ class Puissance4Sprite(GameSprite):
         self.rect.center = [self.x, self.y]
 
     def update(self):
-        speed = 20
+        speed = 30
         if self.y < self.y_max:
             self.y += speed
+            if self.y > self.y_max:
+                self.y = self.y_max
             self.rect = self.image.get_rect()
             self.rect.center = [self.x, self.y]
+
         # else:
         #     self.y_max =
 

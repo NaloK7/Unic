@@ -9,8 +9,8 @@ class GamePuissance4:
         self.current_path = os.getcwd()
         self.master = master
 
-        self.width = 700
-        self.height = 600
+        self.width = 933
+        self.height = 800
         self.screen = pg.display.set_mode((self.width, self.height))
 
         self.sprite_group = pg.sprite.Group()
@@ -60,8 +60,8 @@ class GamePuissance4:
                 mouse_x, mouse_y = mouse_pos
                 # convert pos to 0 / 1
                 mouse_x = mouse_x // (self.width // 7)
-                mouse_y = mouse_y // (self.height // 6)
-                self.checkInputPos(mouse_x, mouse_y)
+                # mouse_y = mouse_y // (self.height // 6)
+                self.checkInputPos(mouse_x)
 
                 if self.counter >= self.counter_max:
                     self.reset = True
@@ -69,30 +69,33 @@ class GamePuissance4:
             if event.type == pg.MOUSEBUTTONDOWN and pg.mouse.get_pressed()[2] and self.reset:
                 self.restart()
 
-    def checkInputPos(self, x: int, y: int):
+    def checkInputPos(self, x: int):
         """
         y: line
         x: column
         check input validity and victory or end
         """
-        if self.ColumnIsNotFull(y):  # Modify: you can click on token to put yours on top if there is space above
+        if self.ColumnIsNotFull(x):  # Modify: you can click on token to put yours on top if there is space above
             # put y in last possible position
-            y_max = self.bottomMax(x)
+            y_max = self.lowestLevelIn(x)
             # add player symbol to matrix
-            self.game_matrix[y_max][x] = self.current_player.symbole  #
+            self.set_token(y_max, x)
             # add sprite to group
             self.addSpriteToGroup(self.current_player.pict_path, x, y_max)  #
             self.counter += 1
-            # reduire la matrice
-            matrix = self.reduce_board()
-            # la verifie
-            if self.victory(matrix):
-                print("victory")
 
+            matrix = self.reduce_board()
+
+            if self.victory(matrix):
                 self.reset = True
             # self.endDisplay()  ##
         else:
             pass
+
+    def set_token(self, y: int, x: int):
+        # add player symbol to matrix
+        # noinspection PyTypeChecker
+        self.game_matrix[y][x] = self.current_player.symbole
 
     def victory(self, matrix):
         """
@@ -103,7 +106,8 @@ class GamePuissance4:
                 or self.columnWim(matrix)
                 or self.diagonal_win(matrix))
 
-    def reduce_colomn(self, matrix):
+    @staticmethod
+    def reduce_column(matrix):
         copy_board = []
         for i in range(len(matrix[0])):
             column = []
@@ -122,7 +126,7 @@ class GamePuissance4:
 
     def reduce_board(self):
         copy_board = self.reduce_line()
-        copy_board = self.reduce_colomn(copy_board)
+        copy_board = self.reduce_column(copy_board)
         for x in range(len(copy_board)):
             for y in range(len(copy_board[x])):
                 if copy_board[x][y] is None:
@@ -148,8 +152,7 @@ class GamePuissance4:
 
     def diagonal_win(self, matrix):
         """
-        prend une matrice en parametre
-        verifie si une diagonale est composée des meme caractere et sans espace
+        check diagonal win in matrix
         """
         for j in range(
                 round(len(matrix[0]) / 2)):  # boucle sur une longueur de ligne / 2
@@ -178,20 +181,23 @@ class GamePuissance4:
 
         return False
 
-    def ColumnIsNotFull(self, y):
+    def ColumnIsNotFull(self, x):
         """
         return boolean state of column fullness
         """
-        if self.game_matrix[0][y] is None:
+        if self.game_matrix[0][x] is None:
+            print("column NOT full")
             return True
         else:
+            print(self.counter)
+            print("column full")
             return False
 
-    def bottomMax(self, x):
+    def lowestLevelIn(self, x):
         """
         return last pos possible in column
         """
-
+        y_max = 0
         for i in range(len(self.game_matrix)):
             # si la case regarder est vide, on garde l'index en memoire
             if self.game_matrix[i][x] is None:
