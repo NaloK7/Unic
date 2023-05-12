@@ -28,6 +28,7 @@ class GamePuissance4:
         self.counter_max = 42  # Modify
         self.running = True
         self.reset = False
+        self.delay = 0
         self.clock = pg.time.Clock()
 
     # noinspection PyMethodMayBeStatic
@@ -136,7 +137,6 @@ class GamePuissance4:
     def line_win(self, matrix):
         for line in matrix:
             if self.current_player.symbole * 4 in "".join(line):
-                print("line")
                 return True
         return False
 
@@ -146,7 +146,6 @@ class GamePuissance4:
             for j in range(len(matrix)):
                 column.append(matrix[j][i])
             if self.current_player.symbole * 4 in "".join(column):
-                print("column")
                 return True
         return False
 
@@ -165,7 +164,6 @@ class GamePuissance4:
                     # part du coin haut droit et descend en diag
                     d2.append(matrix[i][-(i + j) - 1])
             if self.line_win([d1, d2]):
-                print("diag1")
                 return True
 
         for j in range(1, round(len(matrix) / 3)):
@@ -176,7 +174,6 @@ class GamePuissance4:
                     d3.append(matrix[j + i][i])
                     d4.append(matrix[j + i][-i - 1])
             if self.line_win([d3, d4]):
-                print("diag2")
                 return True
 
         return False
@@ -186,11 +183,8 @@ class GamePuissance4:
         return boolean state of column fullness
         """
         if self.game_matrix[0][x] is None:
-            print("column NOT full")
             return True
         else:
-            print(self.counter)
-            print("column full")
             return False
 
     def lowestLevelIn(self, x):
@@ -220,6 +214,7 @@ class GamePuissance4:
 
     # noinspection PyMethodMayBeStatic
     def display(self):
+
         # background
         self.screen.blit(self.bg_sprite.image, self.bg_sprite.rect)
         # token group
@@ -231,7 +226,9 @@ class GamePuissance4:
         # blue grid image
         self.screen.blit(self.front_sprite.image, self.front_sprite.rect)
         if self.reset:
-            self.displayRestartImage()
+            self.delay += 1
+            if self.delay >= 30:
+                self.displayRestartImage()
         pg.display.flip()
 
     def run(self):

@@ -8,6 +8,7 @@ class GameSprite(pygame.sprite.Sprite):
         self.width_max = width
         self.height_max = height
 
+
 # background / restart
 
 
@@ -24,7 +25,7 @@ class FixedSprite(GameSprite):
         self.rect = self.image.get_rect()
 
         # center of image is center of window
-        self.rect.center = [self.width_max//2, self.height_max//2]
+        self.rect.center = [self.width_max // 2, self.height_max // 2]
 
 
 # puissance 4 token
@@ -36,6 +37,7 @@ class Puissance4Sprite(GameSprite):
     x: x coord of sprite
     y: y coord of sprite
     """
+
     def __init__(self, path: str, width: int, height: int, x: int, y_max: int):
         super().__init__(path, width, height)
         # A REVOIR
