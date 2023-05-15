@@ -24,15 +24,15 @@ class Game:
         self.counter = 0
 
         # player
-        self.player_X = Player("X", f"{self.current_path}\Morpion\crossWhite.png")
-        self.player_O = Player("O", f"{self.current_path}\Morpion\circleWhite.png")
+        self.player_X = Player("X", f"{self.current_path}\img\crossWhite.png")
+        self.player_O = Player("O", f"{self.current_path}\img\circleWhite.png")
         self.current_player = self.player_O
 
         self.game_matrice = self.matrixMorpion()
         self.win_line = ""
 
-        self.restart_image_path = f"{self.current_path}\\restart.png"
-        self.win_line_path = f"{self.current_path}\Morpion\greenLine.png"
+        self.restart_image_path = f"{self.current_path}\img\\restart.png"
+        self.win_line_path = f"{self.current_path}\img\greenLine.png"
         self.reset = False
 
         # self.run()Z

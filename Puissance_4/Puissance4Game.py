@@ -18,13 +18,13 @@ class GamePuissance4:
 
         self.sprite_group = pg.sprite.Group()
 
-        self.bg_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\background.png", self.width, self.height)
-        self.front_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\blue_grid.png", self.width, self.height)
+        self.bg_sprite = gs.FixedSprite(f"{self.current_path}\img\\background.png", self.width, self.height)
+        self.front_sprite = gs.FixedSprite(f"{self.current_path}\img\\blue_grid.png", self.width, self.height)
 
-        self.restart_sprite = gs.FixedSprite(f"{self.current_path}\\restart.png", self.width, self.height, restart=True)
+        self.restart_sprite = gs.FixedSprite(f"{self.current_path}\img\\restart.png", self.width, self.height, restart=True)
 
-        self.player_y = Player("y", f"{self.current_path}\Puissance_4\yellow_token.png")
-        self.player_r = Player("r", f"{self.current_path}\Puissance_4\\red_token.png")
+        self.player_y = Player("y", f"{self.current_path}\img\yellow_token.png")
+        self.player_r = Player("r", f"{self.current_path}\img\\red_token.png")
         self.current_player = self.player_y
 
         self.mouse_sprite = gs.MouseSprite(self.current_player.pict_path, self.width, self.height)
