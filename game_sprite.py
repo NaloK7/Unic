@@ -13,6 +13,10 @@ class GameSprite(pygame.sprite.Sprite):
 
 
 class FixedSprite(GameSprite):
+    """
+    restart: True → resize image with length
+    used for background / front / restart
+    """
     def __init__(self, path: str, width: int, height: int, restart=False):
         super().__init__(path, width, height)
         if restart:
@@ -31,11 +35,7 @@ class FixedSprite(GameSprite):
 # puissance 4 token
 class Puissance4Sprite(GameSprite):
     """
-    path: path of image
-    width: width of window
-    height: height of window
-    x: x coord of sprite
-    y: y coord of sprite
+    resize sprite of token player to scale with window
     """
 
     def __init__(self, path: str, width: int, height: int, x: int, y_max: int):
@@ -64,22 +64,17 @@ class Puissance4Sprite(GameSprite):
             self.rect = self.image.get_rect()
             self.rect.center = [self.x, self.y]
 
-        # else:
-        #     self.y_max =
 
-# class GameSprite(pygame.sprite.Sprite):
-#     def __init__(self, path: str, wmax: int, hmax: int, x=0, y=0, r=0):
-#         super().__init__()
-#         # init picture
-#         self.pict = pygame.image.load(path)
-#         self.width_max = wmax
-#         self.height_max = hmax
-#         self.pos_x = x
-#         self.pos_y = y
-#         self.rotation = r
-#
-#         # work with
-#         self.pict = pygame.transform.scale(self.pict, (self.width_max, self.height_max))
-#         self.rect = self.pict.get_rect()
-#         self.rect.center = [self.width_max//2, self.height_max//2]
-#
+class MouseSprite(GameSprite):
+    def __init__(self, path, width, height):
+        super().__init__(path, width, height)
+        self.width = (self.width_max // 7) - 20
+        self.height = (self.height_max // 6) - 20
+        self.image = self.image = pygame.image.load(path)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.rect = self.image.get_rect()
+
+    def update(self, path):
+        self.image = pygame.image.load(path)
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.rect.center = pygame.mouse.get_pos()

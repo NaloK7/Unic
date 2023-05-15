@@ -1,5 +1,8 @@
 import pygame as pg
 import os
+
+import pygame.mouse
+
 from player import Player
 import game_sprite as gs
 
@@ -17,11 +20,14 @@ class GamePuissance4:
 
         self.bg_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\background.png", self.width, self.height)
         self.front_sprite = gs.FixedSprite(f"{self.current_path}\Puissance_4\\blue_grid.png", self.width, self.height)
+
         self.restart_sprite = gs.FixedSprite(f"{self.current_path}\\restart.png", self.width, self.height, restart=True)
 
         self.player_y = Player("y", f"{self.current_path}\Puissance_4\yellow_token.png")
         self.player_r = Player("r", f"{self.current_path}\Puissance_4\\red_token.png")
         self.current_player = self.player_y
+
+        self.mouse_sprite = gs.MouseSprite(self.current_player.pict_path, self.width, self.height)
 
         self.game_matrix = self.matrixPuissance()
         self.counter = 0
@@ -30,6 +36,7 @@ class GamePuissance4:
         self.reset = False
         self.delay = 0
         self.clock = pg.time.Clock()
+        pygame.mouse.set_visible(False)
 
     # noinspection PyMethodMayBeStatic
     def matrixPuissance(self):
@@ -203,6 +210,7 @@ class GamePuissance4:
 
     def restart(self):
         self.reset = False
+        self.delay = 0
         self.counter = 0
         self.sprite_group.empty()
         self.screen.blit(self.bg_sprite.image, self.bg_sprite.rect)
@@ -223,8 +231,13 @@ class GamePuissance4:
 
             sprite.update()
         self.sprite_group.draw(self.screen)
+        # mousse
+        self.mouse_sprite.update(self.current_player.pict_path)
+        self.screen.blit(self.mouse_sprite.image, self.mouse_sprite.rect)
+
         # blue grid image
         self.screen.blit(self.front_sprite.image, self.front_sprite.rect)
+
         if self.reset:
             self.delay += 1
             if self.delay >= 30:
