@@ -9,13 +9,27 @@ class GameSprite(pygame.sprite.Sprite):
         self.height_max = height
 
 
-# background / restart
+class WinnerSprite(GameSprite):
+    """
+    restart: True → resize image with length
+    used for display in center background / front / restart
+    """
+    def __init__(self, path: str, width: int, height: int):
+        super().__init__(path, width, height)
+        width = width // 3
+        height = (height // 4) - 50
+        self.image = pygame.transform.scale(self.image, (width, height))
+
+        self.rect = self.image.get_rect()
+
+        # center of image is center of window
+        self.rect.center = [self.width_max // 2, self.height_max // 4]
 
 
 class FixedSprite(GameSprite):
     """
     restart: True → resize image with length
-    used for background / front / restart
+    used for display in center background / front / restart
     """
     def __init__(self, path: str, width: int, height: int, restart=False):
         super().__init__(path, width, height)

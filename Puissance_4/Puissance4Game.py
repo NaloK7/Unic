@@ -21,12 +21,16 @@ class GamePuissance4:
         self.bg_sprite = gs.FixedSprite(f"{self.current_path}\img\\background.png", self.width, self.height)
         self.front_sprite = gs.FixedSprite(f"{self.current_path}\img\\blue_grid.png", self.width, self.height)
 
-        self.restart_sprite = gs.FixedSprite(f"{self.current_path}\img\\restart.png", self.width, self.height, restart=True)
+        self.restart_sprite = gs.FixedSprite(
+            f"{self.current_path}\img\\restart.png",
+            self.width,
+            self.height,
+            restart=True)
 
         self.player_y = Player("y", f"{self.current_path}\img\yellow_token.png")
         self.player_r = Player("r", f"{self.current_path}\img\\red_token.png")
         self.current_player = self.player_y
-
+        self.winner_sp = gs.WinnerSprite(f"{self.current_path}\img\yellow_win.png", self.width, self.height)
         self.mouse_sprite = gs.MouseSprite(self.current_player.pict_path, self.width, self.height)
 
         self.game_matrix = self.matrixPuissance()
@@ -34,6 +38,7 @@ class GamePuissance4:
         self.counter_max = 42  # Modify
         self.running = True
         self.reset = False
+        self.winner = False
         self.delay = 0
         self.clock = pg.time.Clock()
         pygame.mouse.set_visible(False)
@@ -79,7 +84,6 @@ class GamePuissance4:
 
     def checkInputPos(self, x: int):
         """
-        y: line
         x: column
         check input validity and victory or end
         """
@@ -96,9 +100,18 @@ class GamePuissance4:
 
             if self.victory(matrix):
                 self.reset = True
-            # self.endDisplay()  ##
+                self.winner = True
+                self.set_winner_sprite()
+
         else:
             pass
+
+    def set_winner_sprite(self):
+        if self.winner:
+            if self.current_player is self.player_y:
+                self.winner_sp = gs.WinnerSprite(f"{self.current_path}\img\yellow_win.png", self.width, self.height)
+            else:
+                self.winner_sp = gs.WinnerSprite(f"{self.current_path}\img\\red_win.png", self.width, self.height)
 
     def set_token(self, y: int, x: int):
         # add player symbol to matrix
@@ -209,6 +222,7 @@ class GamePuissance4:
         return y_max
 
     def restart(self):
+        self.winner = False
         self.reset = False
         self.delay = 0
         self.counter = 0
@@ -242,6 +256,8 @@ class GamePuissance4:
             self.delay += 1
             if self.delay >= 30:
                 self.displayRestartImage()
+                if self.winner:
+                    self.screen.blit(self.winner_sp.image, self.winner_sp.rect)
         pg.display.flip()
 
     def run(self):
