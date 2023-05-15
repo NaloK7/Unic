@@ -31,7 +31,7 @@ class Game:
         self.game_matrice = self.matrixMorpion()
         self.win_line = ""
 
-        self.restart_image_path = f"{self.current_path}\Morpion\\restart.png"
+        self.restart_image_path = f"{self.current_path}\\restart.png"
         self.win_line_path = f"{self.current_path}\Morpion\greenLine.png"
         self.reset = False
 
