@@ -1,8 +1,6 @@
 import pygame as pg
 import os
-
 import pygame.mouse
-
 from player import Player
 import game_sprite as gs
 
