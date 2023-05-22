@@ -1,5 +1,6 @@
 import tkinter as tk
 import game_window as gm
+from cryptic import Cryptic
 
 
 class MasterWindow(tk.Tk):
@@ -12,8 +13,8 @@ class MasterWindow(tk.Tk):
         super().__init__()
         # self.eval('tk::PlaceWindow . center')
         # size and placement on screen
-        self.geometry("500x300+600+400")
-        self.resizable(width=False, height=False)
+        self.geometry("700x500")
+        # self.resizable(width=False, height=False)
         # window's name
         self.title("Unique")
 
@@ -46,12 +47,16 @@ class MasterWindow(tk.Tk):
         # crypto button
         self.button_crypt_file = tk.Button(
             self.frame_button, text="Cryptage",
-            command=self.display_window_game
+            command=self.display_encryption
         )
         self.button_crypt_file.pack(side="left")
 
         self.mainloop()
 
     def display_window_game(self):
-        # self.window_game = gm.GameChoiceWindow(self)
-        gm.GameChoiceWindow(self)
+        game_win = gm.GameChoiceWindow(self)
+        return game_win
+
+    def display_encryption(self):
+        crypt_win = Cryptic()
+        return crypt_win
