@@ -6,6 +6,7 @@ import os
 
 class Game:
     def __init__(self, master):
+        # self.master.withdraw()
         self.current_path = os.getcwd()
         self.master = master
 
