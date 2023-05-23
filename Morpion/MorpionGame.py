@@ -36,8 +36,6 @@ class Game:
         self.win_line_path = f"{self.current_path}\img\greenLine.png"
         self.reset = False
 
-        # self.run()Z
-
     def manageEvents(self):
         """
         check QUIT / mouse click / restart
@@ -46,8 +44,6 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-                # self.master.deiconify()
-                # pygame.quit()
 
             # left click on mouse
             if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0] and not self.reset:
@@ -90,7 +86,6 @@ class Game:
         else:
             pass
 
-
     def matrixMorpion(self):
         """
         create an empty matrix 3x3
@@ -111,7 +106,6 @@ class Game:
         return (self.checkHorizontal()
                 or self.checkVertical()
                 or self.diagonal_win())
-
 
     def checkLine(self, line: list):
         """
@@ -138,10 +132,6 @@ class Game:
                 self.win_line = f"L{i}"
                 return True
         return False
-        # for line in self.game_matrice:
-        #     if self.win_line(line):
-        #         return True
-        # return False
 
     def checkVertical(self):
         """

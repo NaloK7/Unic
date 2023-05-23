@@ -18,29 +18,70 @@ class WUnique(ctk.CTk):
     def __init__(self):
         super().__init__()
         # size
-        self.geometry("700x500")
+        self.geometry("800x600")
         # window name
         self.title("Unique")
 
         self.file_menu = FileMenu(self, 20)
+
         # game slide
-        self.game_panel = SlidePanel(self, -0.3, 0.0)
+        self.game_panel = SlidePanel(self, 1.0, 0.6)
+
+        # buttons in Game panel
+        # morpion button
         self.morpion_button = ctk.CTkButton(self.game_panel,
                                             text='Morpion',
+                                            font=("default", 12, "bold"),
+                                            fg_color="#A52D24",  # red ok #B53127 /
                                             corner_radius=5,
-                                            command=self.run_morpion)
-
-        self.morpion_button.pack(padx=5,
-                                 pady=5,
-                                 )
+                                            width=140,
+                                            height=28,
+                                            hover_color="green",
+                                            command=self.run_morpion).place(anchor="n", relx=0.18, rely=0.1)
+        # puissance 4 button
+        self.puissance_button = ctk.CTkButton(self.game_panel,
+                                              text='Puissance 4',
+                                              font=("default", 12, "bold"),
+                                              fg_color="#A52D24",
+                                              corner_radius=5,
+                                              width=140,
+                                              height=28,
+                                              hover_color="green",
+                                              command=self.run_puissance4).place(anchor="n", relx=0.5, rely=0.1)
+        # xxxx button
+        self.snake_button = ctk.CTkButton(self.game_panel,
+                                          text='Snake',
+                                          font=("default", 12, "bold"),
+                                          fg_color="#A52D24",
+                                          corner_radius=5,
+                                          width=140,
+                                          height=28,
+                                          hover_color="green",
+                                          command=self.run_morpion).place(anchor="n", relx=0.82, rely=0.1)
 
         # main game button
         self.button = ctk.CTkButton(self,
                                     text="Game",
+                                    font=("default", 12, "bold"),
+                                    # fg_color="#808080",
+                                    # border_width=1,
+                                    # border_color=("black", "white"),
                                     command=self.game_panel.move_panel)
 
-        self.button.place(relx=0.5,
-                          rely=0.5,
+        self.button.place(relx=0.25,
+                          rely=0.4,
+                          anchor="center")
+        # encrypted button
+        self.button = ctk.CTkButton(self,
+                                    text="Cryptage",
+                                    font=("default", 12, "bold"),
+                                    # fg_color="#808080",
+                                    # border_width=1,
+                                    # border_color=("black", "white"),
+                                    command=self.game_panel.move_panel)
+
+        self.button.place(relx=0.75,
+                          rely=0.4,
                           anchor="center")
 
     def run_morpion(self):
@@ -55,47 +96,53 @@ class WUnique(ctk.CTk):
 
 
 class SlidePanel(ctk.CTkFrame):
-    def __init__(self, parent, start_pos, end_pos):
-        super().__init__(master=parent)
+    def __init__(self, parent, start_pos: float, end_pos: float):
+        """
+        Place a widget in the parent widget. Use as options:
+        in=master - master relative to which the widget is placed
+        in_=master - see 'in' option description
+        x=amount - locate anchor of this widget at position x of master
+        y=amount - locate anchor of this widget at position y of master
+        relx=amount - locate anchor of this widget between 0.0 and 1.0 relative to width of master (1.0 is right edge)
+        rely=amount - locate anchor of this widget between 0.0 and 1.0 relative to height of master (1.0 is bottom edge)
+        anchor=NSEW (or subset) - position anchor according to given direction
+        width=amount - width of this widget in pixel
+        height=amount - height of this widget in pixel
+        relwidth=amount - width of this widget between 0.0 and 1.0 relative to width of master
+        relheight=amount - height of this widget between 0.0 and 1.0 relative to height of master
+        bordermode="inside" or "outside" - whether to take border width of master widget into account
+        """
+        super().__init__(master=parent, corner_radius=5, border_width=3, border_color="grey")
 
-        self.start_pos = start_pos  # -x
-        self.end_pos = end_pos  # 0
-        self.width = abs(start_pos - end_pos) + 0.03
+        self.start_pos = start_pos
+        self.end_pos = end_pos
+        self.height = abs(start_pos - end_pos) + 0.01
 
         self.pos = self.start_pos
         self.is_hide = True
-        self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
-        self.arrow = ctk.CTkButton(self,
-                                   text=">",
-                                   width=20,
-                                   corner_radius=0,
-                                   height=self.cget("height"),
-                                   fg_color="transparent",
-                                   hover_color="#444444",
-                                   command=self.move_panel)
-        self.arrow.pack(side="right", fill="y")
+
+        self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
 
     def move_panel(self):
         if self.is_hide:
-            self.move_to_right()
+            self.move_up()
         else:
-            self.move_to_left()
+            self.move_down()
 
-    def move_to_left(self):
-        if self.pos > self.start_pos:
-            self.pos -= 0.01
-            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
-            self.after(10, self.move_to_left)
-            self.arrow.configure(text=">")
+    def move_down(self):
+        if self.pos < self.start_pos:
+            self.pos += 0.02
+            self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
+            self.after(10, self.move_down)
+
         else:
             self.is_hide = True
 
-    def move_to_right(self):
-        if self.pos < self.end_pos:
-            self.pos += 0.01
-            self.place(relx=self.pos, rely=0.05, relwidth=self.width, relheight=0.9)
-            self.after(10, self.move_to_right)
-            self.arrow.configure(text="<")
+    def move_up(self):
+        if self.pos > self.end_pos:
+            self.pos -= 0.02
+            self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
+            self.after(10, self.move_up)
         else:
             self.is_hide = False
 
@@ -121,6 +168,7 @@ class FileMenu:
                                          height=20,
                                          corner_radius=0,
                                          values=["Aide"],
+                                         text_color="white",
                                          )  # put self.options.set("   Fichier") in callback function
         self.options.place(x=0,
                            y=0,
@@ -130,11 +178,14 @@ class FileMenu:
 
         # appearance menu
         self.appearance_option = ctk.CTkOptionMenu(self.menu_frame,
-                                                   width=110,
+                                                   width=90,
                                                    height=20,
                                                    corner_radius=0,
                                                    values=["Light", "Dark"],
-                                                   # fg_color=("white", "black"),
+                                                   text_color=("black", "white"),
+                                                   fg_color=("white", "black"),
+                                                   button_color=("white", "black"),
+                                                   button_hover_color=("white", "black"),
                                                    command=self.optionmenu_callback,
                                                    )
         self.appearance_option.place(x=66,
@@ -147,7 +198,7 @@ class FileMenu:
                                        height=20,
                                        corner_radius=0,
                                        fg_color=("white", "black"))
-        self.menu_frame.place(x=156,
+        self.menu_frame.place(x=145,
                               y=0,
                               relwidth=1)
 
