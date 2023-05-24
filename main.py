@@ -14,7 +14,6 @@ class WUnique(ctk.CTk):
     """
     encryption window
     """
-
     def __init__(self):
         super().__init__()
         # size
@@ -26,6 +25,8 @@ class WUnique(ctk.CTk):
 
         # game slide
         self.game_panel = SlidePanel(self, 1.0, 0.6)
+        # encryption slide
+        self.encryption_panel = SlidePanel(self, 1.0, 0.6)
 
         # buttons in Game panel
         # morpion button
@@ -66,7 +67,7 @@ class WUnique(ctk.CTk):
                                     # fg_color="#808080",
                                     # border_width=1,
                                     # border_color=("black", "white"),
-                                    command=self.game_panel.move_panel)
+                                    command=self.move_game_panel)
 
         self.button.place(relx=0.25,
                           rely=0.4,
@@ -78,11 +79,23 @@ class WUnique(ctk.CTk):
                                     # fg_color="#808080",
                                     # border_width=1,
                                     # border_color=("black", "white"),
-                                    command=self.game_panel.move_panel)
+                                    command=self.move_encryption_panel)
 
         self.button.place(relx=0.75,
                           rely=0.4,
                           anchor="center")
+
+    def move_game_panel(self):
+        if not self.encryption_panel.is_hide:
+            self.encryption_panel.move_panel()
+        self.game_panel.tkraise(self.encryption_panel)
+        self.game_panel.move_panel()
+
+    def move_encryption_panel(self):
+        if not self.game_panel.is_hide:
+            self.game_panel.move_panel()
+        self.encryption_panel.tkraise(self.game_panel)
+        self.encryption_panel.move_panel()
 
     def run_morpion(self):
         pygame.init()
@@ -97,23 +110,7 @@ class WUnique(ctk.CTk):
 
 class SlidePanel(ctk.CTkFrame):
     def __init__(self, parent, start_pos: float, end_pos: float):
-        """
-        Place a widget in the parent widget. Use as options:
-        in=master - master relative to which the widget is placed
-        in_=master - see 'in' option description
-        x=amount - locate anchor of this widget at position x of master
-        y=amount - locate anchor of this widget at position y of master
-        relx=amount - locate anchor of this widget between 0.0 and 1.0 relative to width of master (1.0 is right edge)
-        rely=amount - locate anchor of this widget between 0.0 and 1.0 relative to height of master (1.0 is bottom edge)
-        anchor=NSEW (or subset) - position anchor according to given direction
-        width=amount - width of this widget in pixel
-        height=amount - height of this widget in pixel
-        relwidth=amount - width of this widget between 0.0 and 1.0 relative to width of master
-        relheight=amount - height of this widget between 0.0 and 1.0 relative to height of master
-        bordermode="inside" or "outside" - whether to take border width of master widget into account
-        """
         super().__init__(master=parent, corner_radius=5, border_width=3, border_color="grey")
-
         self.start_pos = start_pos
         self.end_pos = end_pos
         self.height = abs(start_pos - end_pos) + 0.01
@@ -131,7 +128,7 @@ class SlidePanel(ctk.CTkFrame):
 
     def move_down(self):
         if self.pos < self.start_pos:
-            self.pos += 0.02
+            self.pos += 0.015
             self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
             self.after(10, self.move_down)
 
@@ -140,7 +137,7 @@ class SlidePanel(ctk.CTkFrame):
 
     def move_up(self):
         if self.pos > self.end_pos:
-            self.pos -= 0.02
+            self.pos -= 0.015
             self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
             self.after(10, self.move_up)
         else:
