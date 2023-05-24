@@ -2,6 +2,9 @@ import customtkinter as ctk
 import pygame
 from Morpion import MorpionGame as mg
 from Puissance_4 import Puissance4Game as pg
+import tkinter.filedialog as fd
+import tkinter as tk
+# import os
 
 
 # import tkinter as tk
@@ -14,6 +17,7 @@ class WUnique(ctk.CTk):
     """
     encryption window
     """
+
     def __init__(self):
         super().__init__()
         # size
@@ -23,12 +27,9 @@ class WUnique(ctk.CTk):
 
         self.file_menu = FileMenu(self, 20)
 
-        # game slide
+        # GAME PANEL
         self.game_panel = SlidePanel(self, 1.0, 0.6)
-        # encryption slide
-        self.encryption_panel = SlidePanel(self, 1.0, 0.6)
 
-        # buttons in Game panel
         # morpion button
         self.morpion_button = ctk.CTkButton(self.game_panel,
                                             text='Morpion',
@@ -49,7 +50,7 @@ class WUnique(ctk.CTk):
                                               height=28,
                                               hover_color="green",
                                               command=self.run_puissance4).place(anchor="n", relx=0.5, rely=0.1)
-        # xxxx button
+        # snake button #TODO
         self.snake_button = ctk.CTkButton(self.game_panel,
                                           text='Snake',
                                           font=("default", 12, "bold"),
@@ -60,6 +61,30 @@ class WUnique(ctk.CTk):
                                           hover_color="green",
                                           command=self.run_morpion).place(anchor="n", relx=0.82, rely=0.1)
 
+        # ENCRYPTION PANEL
+        self.encryption_panel = SlidePanel(self, 1.0, 0.6)
+        # encrypt button
+        self.morpion_button = ctk.CTkButton(self.encryption_panel,
+                                            text='Open',
+                                            font=("default", 12, "bold"),
+                                            fg_color="#A52D24",  # red ok #B53127 /
+                                            corner_radius=5,
+                                            width=140,
+                                            height=28,
+                                            hover_color="green",
+                                            command=self.get_file_path).place(anchor="n", relx=0.5, rely=0.1)
+        # todo make frame to englobe next four widgets
+        self.file_label = ctk.CTkLabel(self.encryption_panel, text="Fichier: ").place(anchor="n", relx=0.2, rely=0.35)
+        self.file_path = tk.StringVar(value="Chemin du fichier")
+
+        # todo if self.file_path is not "Chemin du fichier": changer couleur bouton ouvrir
+
+        self.file_entry = ctk.CTkEntry(self.encryption_panel, textvariable=self.file_path, state="disabled").place(anchor="n", relx=0.5, rely=0.35, relwidth=0.5)
+
+        self.key_label = ctk.CTkLabel(self.encryption_panel, text="Clé: ").place(anchor="n", relx=0.2, rely=0.50)
+        self.key_entry = ctk.CTkEntry(self.encryption_panel).place(anchor="n", relx=0.5, rely=0.50, relwidth=0.5)
+
+        self.output_path = ctk.CTkEntry(self.encryption_panel).place(anchor="n", relx=0.5, rely=0.75, relwidth=0.5)
         # main game button
         self.button = ctk.CTkButton(self,
                                     text="Game",
@@ -85,6 +110,14 @@ class WUnique(ctk.CTk):
                           rely=0.4,
                           anchor="center")
 
+    def get_file_path(self):
+        """
+        return file path
+        """
+        path = fd.askopenfilename(initialdir="/",
+                                  title="Selection file",
+                                  filetypes=[("Text files", "*.txt")])
+        self.file_path.set(path)
     def move_game_panel(self):
         if not self.encryption_panel.is_hide:
             self.encryption_panel.move_panel()
