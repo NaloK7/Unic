@@ -1,9 +1,17 @@
+# coding: utf-8
+
 import customtkinter as ctk
 import pygame
-from Morpion import MorpionGame as mg
-from Puissance_4 import Puissance4Game as pg
 import tkinter.filedialog as fd
 import tkinter as tk
+from Morpion import MorpionGame as mg
+from Puissance_4 import Puissance4Game as pg
+from file_menu import FileMenu
+from slide_panel import SlidePanel
+import string
+import random
+
+
 # import os
 
 
@@ -22,6 +30,8 @@ class WUnique(ctk.CTk):
         super().__init__()
         # size
         self.geometry("800x600")
+        # self.resizable(width=False, height=False)
+
         # window name
         self.title("Unique")
 
@@ -50,7 +60,7 @@ class WUnique(ctk.CTk):
                                               height=28,
                                               hover_color="green",
                                               command=self.run_puissance4).place(anchor="n", relx=0.5, rely=0.1)
-        # snake button #TODO
+        # snake button ICW
         self.snake_button = ctk.CTkButton(self.game_panel,
                                           text='Snake',
                                           font=("default", 12, "bold"),
@@ -62,29 +72,91 @@ class WUnique(ctk.CTk):
                                           command=self.run_morpion).place(anchor="n", relx=0.82, rely=0.1)
 
         # ENCRYPTION PANEL
-        self.encryption_panel = SlidePanel(self, 1.0, 0.6)
+        self.encryption_panel = SlidePanel(self, 1.0, 0.5)
         # encrypt button
-        self.morpion_button = ctk.CTkButton(self.encryption_panel,
-                                            text='Open',
+        self.open_file_button = ctk.CTkButton(self.encryption_panel,
+                                              text='1. Open',
+                                              font=("default", 12, "bold"),
+                                              fg_color="#A52D24",  # red ok #B53127 /
+                                              corner_radius=5,
+                                              width=140,
+                                              height=28,
+                                              hover_color="green",
+                                              command=self.get_file_path)
+        self.open_file_button.place(anchor="n", relx=0.5, rely=0.1)
+
+        # make frame to englobe next widgets
+        # "Fichier entré"
+        self.file_label = ctk.CTkLabel(self.encryption_panel,
+                                       text="Fichier: ")
+        self.file_label.place(anchor="n", relx=0.2, rely=0.25)
+
+        self.file_path = tk.StringVar(value="Chemin du fichier")
+
+        self.file_entry = ctk.CTkEntry(self.encryption_panel,
+                                       textvariable=self.file_path,
+                                       state="disabled")
+        self.file_entry.place(anchor="n", relx=0.5, rely=0.25, relwidth=0.5)
+
+        # "Clé
+        self.key_label = ctk.CTkLabel(self.encryption_panel,
+                                      text="Clé: ")
+        self.key_label.place(anchor="n", relx=0.2, rely=0.40)
+
+        self.key_var = tk.StringVar(value=self.set_key())
+
+        self.key_entry = ctk.CTkEntry(self.encryption_panel,
+                                      textvariable=self.key_var,
+                                      # state="disabled",
+                                      )
+        self.key_entry.place(anchor="n", relx=0.475, rely=0.40, relwidth=0.45)
+
+        self.generate_button = ctk.CTkButton(self.encryption_panel,
+                                             text=chr(10226),
+                                             font=("default", 12, "bold"),
+                                             width=30,
+                                             command=self.update_key_entry)
+        self.generate_button.place(anchor="n", relx=0.725, rely=0.40)
+
+        # "Chiffrer"
+        self.encrypt_button = ctk.CTkButton(self.encryption_panel,
+                                            text='2. Chiffrer',
                                             font=("default", 12, "bold"),
                                             fg_color="#A52D24",  # red ok #B53127 /
                                             corner_radius=5,
-                                            width=140,
+                                            width=120,
                                             height=28,
                                             hover_color="green",
-                                            command=self.get_file_path).place(anchor="n", relx=0.5, rely=0.1)
-        # todo make frame to englobe next four widgets
-        self.file_label = ctk.CTkLabel(self.encryption_panel, text="Fichier: ").place(anchor="n", relx=0.2, rely=0.35)
-        self.file_path = tk.StringVar(value="Chemin du fichier")
+                                            command=self.get_file_path)
 
-        # todo if self.file_path is not "Chemin du fichier": changer couleur bouton ouvrir
+        self.encrypt_button.place(anchor="n", relx=0.335, rely=0.55)
 
-        self.file_entry = ctk.CTkEntry(self.encryption_panel, textvariable=self.file_path, state="disabled").place(anchor="n", relx=0.5, rely=0.35, relwidth=0.5)
+        # label between buttons
+        self.or_label = ctk.CTkLabel(self.encryption_panel,
+                                     text="OU")
+        self.or_label.place(anchor="n", relx=0.5, rely=0.55)
+        # "Déchiffrer"
+        self.decrypt_button = ctk.CTkButton(self.encryption_panel,
+                                            text='2. Déchiffrer',
+                                            font=("default", 12, "bold"),
+                                            fg_color="#A52D24",  # red ok #B53127 /
+                                            corner_radius=5,
+                                            width=120,
+                                            height=28,
+                                            hover_color="green",
+                                            command=self.get_file_path)
 
-        self.key_label = ctk.CTkLabel(self.encryption_panel, text="Clé: ").place(anchor="n", relx=0.2, rely=0.50)
-        self.key_entry = ctk.CTkEntry(self.encryption_panel).place(anchor="n", relx=0.5, rely=0.50, relwidth=0.5)
+        self.decrypt_button.place(anchor="n", relx=0.665, rely=0.55)
 
-        self.output_path = ctk.CTkEntry(self.encryption_panel).place(anchor="n", relx=0.5, rely=0.75, relwidth=0.5)
+        # label output
+        self.file_label = ctk.CTkLabel(self.encryption_panel,
+                                       text="Sortit: ")
+        self.file_label.place(anchor="n", relx=0.2, rely=0.7)
+
+        # "Fichier sortit"
+        self.output_path = ctk.CTkEntry(self.encryption_panel)
+        self.output_path.place(anchor="n", relx=0.5, rely=0.7, relwidth=0.5)
+
         # main game button
         self.button = ctk.CTkButton(self,
                                     text="Game",
@@ -110,6 +182,16 @@ class WUnique(ctk.CTk):
                           rely=0.4,
                           anchor="center")
 
+    def set_key(self):
+        """
+        generate random encryption key of 10 upper letters
+        """
+        new_key = ''.join(random.choice(string.ascii_uppercase) for _ in range(10))
+        return new_key
+
+    def update_key_entry(self):
+        self.key_var.set(self.set_key())
+
     def get_file_path(self):
         """
         return file path
@@ -117,7 +199,16 @@ class WUnique(ctk.CTk):
         path = fd.askopenfilename(initialdir="/",
                                   title="Selection file",
                                   filetypes=[("Text files", "*.txt")])
+
+        if path != "Chemin du fichier" and path != "":
+            self.open_file_button.configure(fg_color="green")
+
+        if path == "":
+            self.open_file_button.configure(fg_color="#A52D24")
+            path = "Chemin du fichier"
+
         self.file_path.set(path)
+
     def move_game_panel(self):
         if not self.encryption_panel.is_hide:
             self.encryption_panel.move_panel()
@@ -139,106 +230,6 @@ class WUnique(ctk.CTk):
         pygame.init()
         game = pg.GamePuissance4(self)
         game.run()
-
-
-class SlidePanel(ctk.CTkFrame):
-    def __init__(self, parent, start_pos: float, end_pos: float):
-        super().__init__(master=parent, corner_radius=5, border_width=3, border_color="grey")
-        self.start_pos = start_pos
-        self.end_pos = end_pos
-        self.height = abs(start_pos - end_pos) + 0.01
-
-        self.pos = self.start_pos
-        self.is_hide = True
-
-        self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
-
-    def move_panel(self):
-        if self.is_hide:
-            self.move_up()
-        else:
-            self.move_down()
-
-    def move_down(self):
-        if self.pos < self.start_pos:
-            self.pos += 0.015
-            self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
-            self.after(10, self.move_down)
-
-        else:
-            self.is_hide = True
-
-    def move_up(self):
-        if self.pos > self.end_pos:
-            self.pos -= 0.015
-            self.place(rely=self.pos, relx=0.05, relwidth=0.9, relheight=self.height)
-            self.after(10, self.move_up)
-        else:
-            self.is_hide = False
-
-
-class FileMenu:
-    """
-    Menu "Fichier"
-    """
-
-    def __init__(self, master, height):
-        # menu frame
-        self.menu_frame = ctk.CTkFrame(master,
-                                       height=height,
-                                       corner_radius=0,
-                                       fg_color=("white", "black"))
-        self.menu_frame.place(x=0,
-                              y=0,
-                              relwidth=1)
-
-        # inside menu
-        self.options = ctk.CTkOptionMenu(self.menu_frame,
-                                         width=85,
-                                         height=20,
-                                         corner_radius=0,
-                                         values=["Aide"],
-                                         text_color="white",
-                                         )  # put self.options.set("   Fichier") in callback function
-        self.options.place(x=0,
-                           y=0,
-                           )
-        # "title" menu
-        self.options.set("   Fichier")
-
-        # appearance menu
-        self.appearance_option = ctk.CTkOptionMenu(self.menu_frame,
-                                                   width=90,
-                                                   height=20,
-                                                   corner_radius=0,
-                                                   values=["Light", "Dark"],
-                                                   text_color=("black", "white"),
-                                                   fg_color=("white", "black"),
-                                                   button_color=("white", "black"),
-                                                   button_hover_color=("white", "black"),
-                                                   command=self.optionmenu_callback,
-                                                   )
-        self.appearance_option.place(x=66,
-                                     y=0,
-                                     )
-        self.appearance_option.set("   Apparence")
-
-        # menu frame
-        self.menu_frame = ctk.CTkFrame(self.menu_frame,
-                                       height=20,
-                                       corner_radius=0,
-                                       fg_color=("white", "black"))
-        self.menu_frame.place(x=145,
-                              y=0,
-                              relwidth=1)
-
-    def optionmenu_callback(self, choice):
-        if choice == "Light" or "Dark":
-            self.change_appearance_to_light(choice)
-
-    def change_appearance_to_light(self, choice):
-        ctk.set_appearance_mode(choice)
-        self.appearance_option.set("   Apparence")
 
 
 test = WUnique()

@@ -1,17 +1,17 @@
+
 import customtkinter as ctk
 import os
 
-class Cryptic(ctk.CTk):
+
+class Encryption:
     """
-    encryption window
+    encryption
     """
-    def __init__(self):
-        super().__init__()
-        self.geometry("500x300")
-        self.title("Cryptic")
-        self.mainloop()
+    def __init__(self, path, key):
+        self.path = path
+        self.key = key
+        self.output = None
 
 
 
-# test = Cryptic()
-# test
+
