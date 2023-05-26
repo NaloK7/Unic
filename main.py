@@ -93,6 +93,7 @@ class WUnique(ctk.CTk):
 
         self.file_entry = ctk.CTkEntry(self.encryption_panel,
                                        textvariable=self.file_path,
+                                       validate="key",
                                        )
         self.file_entry.place(anchor="n", relx=0.5, rely=0.25, relwidth=0.5)
 
@@ -109,8 +110,9 @@ class WUnique(ctk.CTk):
         self.key_entry = ctk.CTkEntry(self.encryption_panel,
                                       textvariable=self.key_var,
                                       )
+
         self.key_entry.place(anchor="n", relx=0.475, rely=0.40, relwidth=0.45)
-        self.key_entry.bind("<KeyRelease>", self.key_not_empty)
+        # self.key_entry.bind("<KeyRelease>", self.key_not_empty)
         self.generate_button = ctk.CTkButton(self.encryption_panel,
                                              text=u"\U000027F2",  # loop arrow
                                              fg_color="transparent",
@@ -210,50 +212,68 @@ class WUnique(ctk.CTk):
         self.button.place(relx=0.75,
                           rely=0.4,
                           anchor="center")
+        # check path file
+        self.file_entry.configure(validate="key",
+                                  validatecommand=(self.encryption_panel.register(self.check_path)),
+                                  )
 
+        # check key
+        self.key_entry.configure(validate="key",
+                                 validatecommand=(self.encryption_panel.register(self.key_not_empty)),
+                                 )
+
+    def are_both_valide(self):
+        if self.key_not_empty() and self.check_path():
+            self.decrypt_button.configure(state="enabled")
+            self.encrypt_button.configure(state="enabled")
+        else:
+            self.decrypt_button.configure(state="disabled")
+            self.encrypt_button.configure(state="disabled")
     def set_key(self):
         """
         generate random encryption key of 10 upper letters
         """
         new_key = ''.join(random.choice(string.ascii_uppercase) for _ in range(10))
+
         return new_key
 
     def update_key_entry(self):
         self.key_var.set(self.set_key())
-    def key_not_empty(self, event):
-        if len(self.key_var.get()) <= 0:
-            self.decrypt_button.configure(state="disabled")
-            self.encrypt_button.configure(state="disabled")
+
+    def key_not_empty(self):
+        if self.key_entry.get() != "":
+            print("key not empty")
+            return True
         else:
-            self.decrypt_button.configure(state="enabled")
-            self.encrypt_button.configure(state="enabled")
-    def check_path(self, event):
+            print("key empty")
+            return False
+
+    def check_path(self, *path):
         """
         check validity of path
         enable/disable "encrypt"/"decrypt" buttons depending on validity
         change "open" button colour depending on validity
         """
-        path_exist = os.path.exists(self.file_path.get())
+        path = self.file_entry.get()
+        path_exist = os.path.exists(path)
         if path_exist:
             # validation mark instead of green button ?
+
             self.open_file_button.configure(fg_color="green")
-            self.decrypt_button.configure(state="normal")
-            self.encrypt_button.configure(state="normal")
 
             path = self.file_path.get()
+            self.file_path.set(path)
+            print("path valid")
+            return True
 
         elif self.file_path.get() == "":
-            self.decrypt_button.configure(state="disabled")
-            self.encrypt_button.configure(state="disabled")
             path = "Aucun fichier sélectionner"
-
+            self.file_path.set(path)
         else:
-            self.open_file_button.configure(fg_color="#A52D24")
-            self.decrypt_button.configure(state="disabled")
-            self.encrypt_button.configure(state="disabled")
             path = self.file_path.get()
-
-        self.file_path.set(path)
+            self.file_path.set(path)
+        print('path not valid')
+        return False
 
     def popup_askopenfilename(self):
         """
@@ -267,6 +287,7 @@ class WUnique(ctk.CTk):
         self.file_path.set(path)
         # check validity of path
         self.check_path(path)
+        self.are_both_valide()
 
     def move_game_panel(self):
         if not self.encryption_panel.is_hide:
