@@ -10,9 +10,7 @@ from file_menu import FileMenu
 from slide_panel import SlidePanel
 import string
 import random
-
-
-# import os
+import os
 
 
 # import tkinter as tk
@@ -95,8 +93,11 @@ class WUnique(ctk.CTk):
 
         self.file_entry = ctk.CTkEntry(self.encryption_panel,
                                        textvariable=self.file_path,
-                                       state="disabled")
+                                       )
         self.file_entry.place(anchor="n", relx=0.5, rely=0.25, relwidth=0.5)
+
+        # bind any key release to check validity textvariable in file_entry
+        self.file_entry.bind("<KeyRelease>", self.check_path)
 
         # "Clé
         self.key_label = ctk.CTkLabel(self.encryption_panel,
@@ -107,13 +108,15 @@ class WUnique(ctk.CTk):
 
         self.key_entry = ctk.CTkEntry(self.encryption_panel,
                                       textvariable=self.key_var,
-                                      # state="disabled",
                                       )
         self.key_entry.place(anchor="n", relx=0.475, rely=0.40, relwidth=0.45)
 
         self.generate_button = ctk.CTkButton(self.encryption_panel,
-                                             text=chr(10226),
-                                             font=("default", 12, "bold"),
+                                             text=u"\U000027F2",  # loop arrow
+                                             fg_color="transparent",
+                                             hover_color="green",
+                                             border_width=1,
+                                             font=("default", 15, "bold"),
                                              width=30,
                                              command=self.update_key_entry)
         self.generate_button.place(anchor="n", relx=0.725, rely=0.40)
@@ -127,6 +130,7 @@ class WUnique(ctk.CTk):
                                             width=120,
                                             height=28,
                                             hover_color="green",
+                                            state="disabled",
                                             command=self.get_file_path)
 
         self.encrypt_button.place(anchor="n", relx=0.335, rely=0.55)
@@ -144,6 +148,7 @@ class WUnique(ctk.CTk):
                                             width=120,
                                             height=28,
                                             hover_color="green",
+                                            state="disabled",
                                             command=self.get_file_path)
 
         self.decrypt_button.place(anchor="n", relx=0.665, rely=0.55)
@@ -155,7 +160,31 @@ class WUnique(ctk.CTk):
 
         # "Fichier sortit"
         self.output_path = ctk.CTkEntry(self.encryption_panel)
-        self.output_path.place(anchor="n", relx=0.5, rely=0.7, relwidth=0.5)
+        self.output_path.place(anchor="n", relx=0.475, rely=0.7, relwidth=0.45)
+
+        # preview button
+        self.preview_button = ctk.CTkButton(self.encryption_panel,
+                                            text=u"\U0001F441",  # œil
+                                            fg_color="transparent",
+                                            hover_color="green",
+                                            border_width=1,
+                                            font=("default", 15, "bold"),
+                                            width=30,
+                                            command=self.update_key_entry)
+        self.preview_button.place(anchor="n", relx=0.725, rely=0.7)
+
+        # save
+        self.save_button = ctk.CTkButton(self.encryption_panel,
+                                         text='3. Sauvegarder',
+                                         font=("default", 12, "bold"),
+                                         fg_color="#A52D24",  # red ok #B53127 /
+                                         corner_radius=5,
+                                         width=120,
+                                         height=28,
+                                         hover_color="green",
+                                         command=self.get_file_path)
+
+        self.save_button.place(anchor="n", relx=0.5, rely=0.85)
 
         # main game button
         self.button = ctk.CTkButton(self,
@@ -192,22 +221,40 @@ class WUnique(ctk.CTk):
     def update_key_entry(self):
         self.key_var.set(self.set_key())
 
-    def get_file_path(self):
-        """
-        return file path
-        """
-        path = fd.askopenfilename(initialdir="/",
-                                  title="Selection file",
-                                  filetypes=[("Text files", "*.txt")])
-
-        if path != "Chemin du fichier" and path != "":
+    def check_path(self, event):
+        print("vu")
+        path_exist = os.path.exists(self.file_path.get())
+        if path_exist:
+            # validation mark instead of green button ?
             self.open_file_button.configure(fg_color="green")
+            self.decrypt_button.configure(state="normal")
+            self.encrypt_button.configure(state="normal")
 
-        if path == "":
+            path = self.file_path.get()
+
+        elif self.file_path.get() == "":
+            self.decrypt_button.configure(state="disabled")
+            self.encrypt_button.configure(state="disabled")
+            path = "Aucun fichier selectionner"
+
+        else:
             self.open_file_button.configure(fg_color="#A52D24")
-            path = "Chemin du fichier"
+            self.decrypt_button.configure(state="disabled")
+            self.encrypt_button.configure(state="disabled")
+            path = self.file_path.get()
 
         self.file_path.set(path)
+
+    def get_file_path(self):
+        """
+        open current directory by default
+        return file path
+        """
+        path = fd.askopenfilename(initialdir=f"{os.getcwd()}",  # "/" means root directory
+                                  title="Selection file",
+                                  filetypes=[("Text files", "*.txt")])
+        self.file_path.set(path)
+        self.check_path(path)
 
     def move_game_panel(self):
         if not self.encryption_panel.is_hide:
