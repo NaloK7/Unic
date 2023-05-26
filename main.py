@@ -80,7 +80,7 @@ class WUnique(ctk.CTk):
                                               width=140,
                                               height=28,
                                               hover_color="green",
-                                              command=self.get_file_path)
+                                              command=self.popup_askopenfilename)
         self.open_file_button.place(anchor="n", relx=0.5, rely=0.1)
 
         # make frame to englobe next widgets
@@ -110,7 +110,7 @@ class WUnique(ctk.CTk):
                                       textvariable=self.key_var,
                                       )
         self.key_entry.place(anchor="n", relx=0.475, rely=0.40, relwidth=0.45)
-
+        self.key_entry.bind("<KeyRelease>", self.key_not_empty)
         self.generate_button = ctk.CTkButton(self.encryption_panel,
                                              text=u"\U000027F2",  # loop arrow
                                              fg_color="transparent",
@@ -131,7 +131,7 @@ class WUnique(ctk.CTk):
                                             height=28,
                                             hover_color="green",
                                             state="disabled",
-                                            command=self.get_file_path)
+                                            command=self.popup_askopenfilename)
 
         self.encrypt_button.place(anchor="n", relx=0.335, rely=0.55)
 
@@ -149,7 +149,7 @@ class WUnique(ctk.CTk):
                                             height=28,
                                             hover_color="green",
                                             state="disabled",
-                                            command=self.get_file_path)
+                                            command=self.popup_askopenfilename)
 
         self.decrypt_button.place(anchor="n", relx=0.665, rely=0.55)
 
@@ -182,7 +182,7 @@ class WUnique(ctk.CTk):
                                          width=120,
                                          height=28,
                                          hover_color="green",
-                                         command=self.get_file_path)
+                                         command=self.popup_askopenfilename)
 
         self.save_button.place(anchor="n", relx=0.5, rely=0.85)
 
@@ -220,9 +220,19 @@ class WUnique(ctk.CTk):
 
     def update_key_entry(self):
         self.key_var.set(self.set_key())
-
+    def key_not_empty(self, event):
+        if len(self.key_var.get()) <= 0:
+            self.decrypt_button.configure(state="disabled")
+            self.encrypt_button.configure(state="disabled")
+        else:
+            self.decrypt_button.configure(state="enabled")
+            self.encrypt_button.configure(state="enabled")
     def check_path(self, event):
-        print("vu")
+        """
+        check validity of path
+        enable/disable "encrypt"/"decrypt" buttons depending on validity
+        change "open" button colour depending on validity
+        """
         path_exist = os.path.exists(self.file_path.get())
         if path_exist:
             # validation mark instead of green button ?
@@ -235,7 +245,7 @@ class WUnique(ctk.CTk):
         elif self.file_path.get() == "":
             self.decrypt_button.configure(state="disabled")
             self.encrypt_button.configure(state="disabled")
-            path = "Aucun fichier selectionner"
+            path = "Aucun fichier sélectionner"
 
         else:
             self.open_file_button.configure(fg_color="#A52D24")
@@ -245,7 +255,7 @@ class WUnique(ctk.CTk):
 
         self.file_path.set(path)
 
-    def get_file_path(self):
+    def popup_askopenfilename(self):
         """
         open current directory by default
         return file path
@@ -253,7 +263,9 @@ class WUnique(ctk.CTk):
         path = fd.askopenfilename(initialdir=f"{os.getcwd()}",  # "/" means root directory
                                   title="Selection file",
                                   filetypes=[("Text files", "*.txt")])
+        # set choose path to text variable
         self.file_path.set(path)
+        # check validity of path
         self.check_path(path)
 
     def move_game_panel(self):
