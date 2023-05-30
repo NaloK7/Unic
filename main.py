@@ -11,7 +11,7 @@ from slide_panel import SlidePanel
 import string
 import random
 import os
-
+from gamesbutton import GamesButton
 
 # import tkinter as tk
 
@@ -33,48 +33,22 @@ class WUnique(ctk.CTk):
         # window name
         self.title("Unique")
 
+        # Menu
         self.file_menu = FileMenu(self, 20)
 
-        # GAME PANEL
-        self.game_panel = SlidePanel(self, 1.0, 0.6)
+        self.text_color = "#F3F3F3"
+        self.font_button = ("default", 12, "bold")
 
-        # morpion button
-        self.morpion_button = ctk.CTkButton(self.game_panel,
-                                            text='Morpion',
-                                            font=("default", 12, "bold"),
-                                            fg_color="#A52D24",  # red ok #B53127 /
-                                            corner_radius=5,
-                                            width=140,
-                                            height=28,
-                                            hover_color="green",
-                                            command=self.run_morpion).place(anchor="n", relx=0.18, rely=0.1)
-        # puissance 4 button
-        self.puissance_button = ctk.CTkButton(self.game_panel,
-                                              text='Puissance 4',
-                                              font=("default", 12, "bold"),
-                                              fg_color="#A52D24",
-                                              corner_radius=5,
-                                              width=140,
-                                              height=28,
-                                              hover_color="green",
-                                              command=self.run_puissance4).place(anchor="n", relx=0.5, rely=0.1)
-        # snake button ICW
-        self.snake_button = ctk.CTkButton(self.game_panel,
-                                          text='Snake',
-                                          font=("default", 12, "bold"),
-                                          fg_color="#A52D24",
-                                          corner_radius=5,
-                                          width=140,
-                                          height=28,
-                                          hover_color="green",
-                                          command=self.run_morpion).place(anchor="n", relx=0.82, rely=0.1)
+        # GAME PANEL
+        self.game_panel = GamesButton(self, 1.0, 0.6, self.font_button, self.text_color)
 
         # ENCRYPTION PANEL
         self.encryption_panel = SlidePanel(self, 1.0, 0.5)
         # encrypt button
         self.open_file_button = ctk.CTkButton(self.encryption_panel,
                                               text='1. Open',
-                                              font=("default", 12, "bold"),
+                                              text_color=self.text_color,
+                                              font=self.font_button,
                                               fg_color="#A52D24",  # red ok #B53127 /
                                               corner_radius=5,
                                               width=140,
@@ -126,7 +100,8 @@ class WUnique(ctk.CTk):
         # "Chiffrer"
         self.encrypt_button = ctk.CTkButton(self.encryption_panel,
                                             text='2. Chiffrer',
-                                            font=("default", 12, "bold"),
+                                            text_color=self.text_color,
+                                            font=self.font_button,
                                             fg_color="#A52D24",  # red ok #B53127 /
                                             corner_radius=5,
                                             width=120,
@@ -144,7 +119,8 @@ class WUnique(ctk.CTk):
         # "Déchiffrer"
         self.decrypt_button = ctk.CTkButton(self.encryption_panel,
                                             text='2. Déchiffrer',
-                                            font=("default", 12, "bold"),
+                                            text_color=self.text_color,
+                                            font=self.font_button,
                                             fg_color="#A52D24",  # red ok #B53127 /
                                             corner_radius=5,
                                             width=120,
@@ -179,7 +155,8 @@ class WUnique(ctk.CTk):
         # save
         self.save_button = ctk.CTkButton(self.encryption_panel,
                                          text='3. Sauvegarder',
-                                         font=("default", 12, "bold"),
+                                         text_color=self.text_color,
+                                         font=self.font_button,
                                          fg_color="#A52D24",  # red ok #B53127 /
                                          corner_radius=5,
                                          width=120,
@@ -192,7 +169,8 @@ class WUnique(ctk.CTk):
         # main game button
         self.button = ctk.CTkButton(self,
                                     text="Game",
-                                    font=("default", 12, "bold"),
+                                    text_color=self.text_color,
+                                    font=self.font_button,
                                     # fg_color="#808080",
                                     # border_width=1,
                                     # border_color=("black", "white"),
@@ -204,7 +182,8 @@ class WUnique(ctk.CTk):
         # encrypted button
         self.button = ctk.CTkButton(self,
                                     text="Cryptage",
-                                    font=("default", 12, "bold"),
+                                    text_color=self.text_color,
+                                    font=self.font_button,
                                     # fg_color="#808080",
                                     # border_width=1,
                                     # border_color=("black", "white"),
