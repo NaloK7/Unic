@@ -297,7 +297,8 @@ class EncryptionPanel(SlidePanel):
         CTkMessagebox(cancel_button="none",
                       message="Le fichier a été sauvegardé avec succès",
                       icon="check",
-                      option_2="Thanks")
+                      option_2="Thanks",
+                      )
 
     def save(self):
         self.show_checkmark()
