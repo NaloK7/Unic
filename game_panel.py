@@ -2,7 +2,7 @@ from slide_panel import SlidePanel
 import customtkinter as ctk
 
 
-class GamesButton(SlidePanel):
+class GamePanel(SlidePanel):
     def __init__(self, master, start, end, font, text_color):
         super().__init__(master, start, end)
         # morpion button
