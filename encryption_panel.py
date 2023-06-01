@@ -12,7 +12,9 @@ from CTkMessagebox import CTkMessagebox
 class EncryptionPanel(SlidePanel):
     def __init__(self, master, start, end, font, color):
         super().__init__(master, start, end)
-
+        # self.master = master
+        # self.font = font
+        # self.color = color
         # encrypt button
         self.open_file_button = ctk.CTkButton(self,
                                               text='1. Open',
@@ -33,13 +35,14 @@ class EncryptionPanel(SlidePanel):
         self.path_label.place(anchor="n", relx=0.2, rely=0.25)
 
         self.path_var = tk.StringVar(value="Chemin du fichier")
-        # call func if string is modify
-        self.path_var.trace("w", self.check_path)
 
         self.path_entry = ctk.CTkEntry(self,
                                        textvariable=self.path_var,
                                        )
         self.path_entry.place(anchor="n", relx=0.5, rely=0.25, relwidth=0.5)
+
+        # call func if string is modify
+        self.path_var.trace("w", self.check_path)
 
         # "Clé
         self.key_label = ctk.CTkLabel(self,
@@ -47,14 +50,15 @@ class EncryptionPanel(SlidePanel):
         self.key_label.place(anchor="n", relx=0.2, rely=0.40)
 
         self.key_var = tk.StringVar(value=self.set_key())
-        # call func if string is modify
-        self.key_var.trace("w", self.check_key)
 
         self.key_entry = ctk.CTkEntry(self,
                                       textvariable=self.key_var,
                                       )
 
         self.key_entry.place(anchor="n", relx=0.475, rely=0.40, relwidth=0.45)
+        # call func if string is modify
+        self.key_var.trace("w", self.check_key)
+
         self.generate_button = ctk.CTkButton(self,
                                              text=u"\U000027F2",  # loop arrow
                                              text_color=("black", "white"),
@@ -126,8 +130,15 @@ class EncryptionPanel(SlidePanel):
                                             command=self.display_popup_preview)
         self.preview_button.place(anchor="n", relx=0.725, rely=0.7)
 
+        self.save_frame = ctk.CTkFrame(self,
+                                       width=170,
+                                       height=28,
+                                       fg_color="transparent"
+                                       )
+        self.save_frame.place(anchor="n", relx=0.5, rely=0.85)
+
         # save
-        self.save_button = ctk.CTkButton(self,
+        self.save_button = ctk.CTkButton(self.save_frame,
                                          text='3. Sauvegarder',
                                          text_color=color,
                                          font=font,
@@ -138,7 +149,20 @@ class EncryptionPanel(SlidePanel):
                                          hover_color="green",
                                          command=self.save)
 
-        self.save_button.place(anchor="n", relx=0.5, rely=0.85)
+        self.save_button.place(anchor="nw", relx=0)
+
+        self.reset = ctk.CTkButton(self.save_frame,
+                                   text='Reset',
+                                   text_color=color,
+                                   font=font,
+                                   # fg_color="#A52D24",  # red ok #B53127 /
+                                   corner_radius=5,
+                                   width=50,
+                                   height=28,
+                                   hover_color="green",
+                                   # command=self.reset,
+                                   )
+        self.reset.place(anchor="ne", relx=1)
 
         self.file = Encryption(self, self.path_var.get(), self.key_var.get())
 
@@ -148,7 +172,7 @@ class EncryptionPanel(SlidePanel):
 
         self.file.output_txt = self.file.encryption()
         self.output_path_var.set(self.file.generate_output_path())
-        self.encrypt_button.configure(fg_color="green")
+        # self.encrypt_button.configure(text=self.encrypt_button.cget("text")+"\U00002714")
         self.path_entry.configure(state="disabled")
         self.key_entry.configure(state="disabled")
         self.decrypt_button.configure(state="disabled")
@@ -161,7 +185,7 @@ class EncryptionPanel(SlidePanel):
         # self.file = Encryption(self, self.path_var.get(), self.key_var.get())
         self.file.output_txt = self.file.encryption(reverse=True)
         self.output_path_var.set(self.file.generate_output_path(encrypt=False))
-        self.decrypt_button.configure(fg_color="green")
+        # self.decrypt_button.configure(fg_color="green")
         self.key_entry.configure(state="disabled")
         self.path_entry.configure(state="disabled")
         self.encrypt_button.configure(state="disabled")
@@ -200,6 +224,7 @@ class EncryptionPanel(SlidePanel):
 
     # noinspection PyUnusedLocal
     def check_to_enable_button(self, *args):
+        print("check both")
         valide_key = len(self.key_var.get()) > 0
         valide_path = os.path.exists(self.path_var.get())
         if valide_key and valide_path:
@@ -229,6 +254,7 @@ class EncryptionPanel(SlidePanel):
 
     # noinspection PyUnusedLocal
     def check_key(self, *args):
+        print("check key")
         key = self.key_var.get()
         new_key = ""
         if len(key) > 0:
@@ -258,6 +284,7 @@ class EncryptionPanel(SlidePanel):
         enable/disable "encrypt"/"decrypt" buttons depending on validity
 
         """
+        print("check path")
         path = self.path_var.get()
         path_exist = os.path.exists(path)
 
@@ -286,20 +313,33 @@ class EncryptionPanel(SlidePanel):
         path = fd.askopenfilename(initialdir=f"{os.getcwd()}",  # "/" means root directory
                                   title="Selection file",
                                   filetypes=[("Text files", "*.txt")])
+
         # set chosen path to text variable
         self.path_var.set(path)
-        # check validity of path
-        self.check_path(path)
-        self.check_key()
 
-    def show_checkmark(self):
+    def popup_save(self):
         # Show some positive message with the checkmark icon
-        CTkMessagebox(cancel_button="none",
-                      message="Le fichier a été sauvegardé avec succès",
-                      icon="check",
-                      option_2="Thanks",
-                      )
+        msg = CTkMessagebox(cancel_button="none",
+                            message="Le fichier a été sauvegardé avec succès",
+                            icon="check",
+                            option_1="OK",
+                            option_2="Annuler")
+        if msg.get() == "Annuler":
+            print("Annuler")
+        else:
+            self.file.save()
 
+    # def reset(self):
+    #     start = self.end_pos
+    #     end = self.start_pos
+    #     font = self.font
+    #     color = self.color
+    #     master = self.master
+    #     self.__init__(master, start, end, font, color)
+    #     self.destroy()
     def save(self):
-        self.show_checkmark()
-        self.file.save()
+        self.popup_save()
+
+
+    # def __init__():
+    #     super().__init__(master, start, end)

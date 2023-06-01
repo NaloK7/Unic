@@ -1,6 +1,7 @@
 # import customtkinter as ctk
 import os
 import unicodedata as uni
+import re
 
 
 class Encryption:
@@ -84,37 +85,53 @@ class Encryption:
         self.state = True
         return self.output_txt
 
+    def re_match(self, string):
+        pattern = "(\(\d+\))?\.txt$"
+        match = re.search(pattern, string)
+        if match:
+            matching_str = match.group(0)
+            string = string.replace(matching_str, "")
+            return string
+
     def generate_output_path(self, encrypt=True):
+        # clear end of string
+        input_path = self.re_match(self.input_path)
+
         if encrypt:
             # si _decrypted.txt → _encrypted.txt
-            if self.input_path.endswith("_decrypted.txt"):
-                self.output_path = self.input_path.replace("_decrypted.txt", "_encrypted.txt")
+            if input_path.endswith("_decrypted"):
+                output_path = input_path.replace("_decrypted", "_encrypted.txt")
 
-            # si _encrypted.txt → todo popup "deja crypter ?"
-            elif self.input_path.endswith("_encrypted.txt"):
+            # si _encrypted.txt →
+            elif input_path.endswith("_encrypted"):
+                # todo popup "deja crypter ?"
                 print("le fichier semble DEJA crypter ?")
-                self.output_path = self.rename_file(self.input_path)
+                output_path = input_path.replace("_encrypted", "_RE-encrypted.txt")
 
             # si .txt → _encrypted.txt
-            elif self.input_path.endswith(".txt"):
-                self.output_path = self.input_path.replace(".txt", "_encrypted.txt")
+            # elif input_path.endswith(".txt"):
+            else:
+                output_path = input_path + "_encrypted.txt"
 
         else:
             # si _encrypted.txt → _decrypted.txt
-            if self.input_path.endswith("_encrypted.txt"):
-                self.output_path = self.input_path.replace("_encrypted.txt", "_decrypted.txt")
+            if input_path.endswith("_encrypted"):
+                output_path = input_path.replace("_encrypted", "_decrypted.txt")
 
-            # si _decrypted.txt → _decrypted(X).txt todo popup "fichier semble deja decrypter ! = cryptage inverse"
-            elif self.input_path.endswith("_decrypted.txt"):
+            # si _decrypted.txt → _decrypted(X).txt
+            elif input_path.endswith("_decrypted"):
+                # todo popup "fichier semble deja decrypter ! = cryptage inverse"
                 print("le fichier semble DEJA decrypter! = cryptage inverse")
-                self.output_path = self.rename_file(self.input_path)
+                output_path = input_path.replace("_decrypted", "_RE-decrypted.txt")
 
-            # si .txt → todo popup "ficher ne semble pas crypter ? = cryptage inverse !"
-            elif self.input_path.endswith(".txt"):
+            # si .txt →
+            # elif input_path.endswith(".txt"):
+            else:
+                # todo popup "ficher ne semble pas crypter ? = cryptage inverse !"
                 print("le fichier ne semble PAS crypter ? = cryptage inverse !")
-                self.output_path = self.input_path.replace(".txt", "_decrypted.txt")
+                output_path = input_path + "_decrypted.txt"
 
-        self.output_path = self.rename_file(self.output_path)
+        self.output_path = self.rename_file(output_path)
         return self.output_path
 
     @staticmethod
@@ -133,6 +150,7 @@ class Encryption:
     def save(self):
         path = self.output_path
         path_key = self.output_path.replace(".txt", "_key.txt")
+        path_key = self.rename_file(path_key)
         with open(path, "w", encoding="utf-8") as new_file:
             new_file.write(self.output_txt)
         with open(path_key, "w", encoding="utf-8") as key:
