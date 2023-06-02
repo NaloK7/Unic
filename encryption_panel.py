@@ -318,6 +318,39 @@ class EncryptionPanel(SlidePanel):
 
         self.path_var.set(path)
 
+    def popup_warning_crypter(self):
+        msg = CTkMessagebox(title="Warning",
+                            message="Le fichier semble deja CRYPTER, êtes vous sur de vouloir continuer?",
+                            icon="warning",
+                            option_1="Annuler",
+                            option_2="Continuer")
+        if msg.get() == "Annuler":
+            return False
+        if msg.get() == "Continuer":
+            return True
+
+    def popup_warning_decrypter(self):
+        msg = CTkMessagebox(title="Warning",
+                            message="Le fichier semble deja DECRYPTER, êtes vous sur de vouloir continuer?",
+                            icon="warning",
+                            option_1="Annuler",
+                            option_2="Continuer")
+        if msg.get() == "Annuler":
+            return False
+        if msg.get() == "Continuer":
+            return True
+
+    def popup_warning_unencrypted(self):
+        msg = CTkMessagebox(title="Warning",
+                            message="Le fichier ne semble PAS CRYPTER, êtes vous sur de vouloir continuer?",
+                            icon="warning",
+                            option_1="Annuler",
+                            option_2="Continuer")
+        if msg.get() == "Annuler":
+            return False
+        if msg.get() == "Continuer":
+            return True
+
     def popup_save(self):
         """
         popup window to choose directory and file name

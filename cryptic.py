@@ -8,7 +8,6 @@ class Encryption:
     """
     encrypt
     """
-
     def __init__(self, master, path: str, key: str):
         # MASTER FRAME
         self.master = master
@@ -97,20 +96,16 @@ class Encryption:
     def generate_output_path(self, encrypt=True):
         # clear end of string
         input_path = self.re_match(self.input_path)
-
+        output_path = self.master.output_path_var.get()
         if encrypt:
-            # si _decrypted.txt → _encrypted.txt
+
             if input_path.endswith("_decrypted"):
                 output_path = input_path.replace("_decrypted", "_encrypted.txt")
 
-            # si _encrypted.txt →
             elif input_path.endswith("_encrypted"):
-                # todo popup "deja crypter ?"
-                print("le fichier semble DEJA crypter ?")
-                output_path = input_path.replace("_encrypted", "_RE-encrypted.txt")
+                if self.master.popup_warning_crypter():
+                    output_path = input_path.replace("_encrypted", "_RE-encrypted.txt")
 
-            # si .txt → _encrypted.txt
-            # elif input_path.endswith(".txt"):
             else:
                 output_path = input_path + "_encrypted.txt"
 
@@ -121,16 +116,14 @@ class Encryption:
 
             # si _decrypted.txt → _decrypted(X).txt
             elif input_path.endswith("_decrypted"):
-                # todo popup "fichier semble deja decrypter ! = cryptage inverse"
-                print("le fichier semble DEJA decrypter! = cryptage inverse")
-                output_path = input_path.replace("_decrypted", "_RE-decrypted.txt")
+                if self.master.popup_warning_decrypter():
+                    output_path = input_path.replace("_decrypted", "_RE-decrypted.txt")
 
             # si .txt →
             # elif input_path.endswith(".txt"):
             else:
-                # todo popup "ficher ne semble pas crypter ? = cryptage inverse !"
-                print("le fichier ne semble PAS crypter ? = cryptage inverse !")
-                output_path = input_path + "_decrypted.txt"
+                if self.master.popup_warning_unencrypted():
+                    output_path = input_path + "_decrypted.txt"
 
         self.output_path = self.rename_file(output_path)
         return self.output_path
