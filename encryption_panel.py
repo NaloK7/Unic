@@ -102,7 +102,7 @@ class EncryptionPanel(SlidePanel):
                                             hover=False,
                                             hover_color="green",
                                             state="disabled",
-                                            command=self.decrypt_file, )
+                                            command=self.decrypt_file)
 
         self.decrypt_button.place(anchor="n", relx=0.665, rely=0.55)
 
@@ -147,7 +147,7 @@ class EncryptionPanel(SlidePanel):
                                          width=120,
                                          height=28,
                                          hover_color="green",
-                                         command=self.save)
+                                         command=self.popup_save)
 
         self.save_button.place(anchor="nw", relx=0)
 
@@ -155,11 +155,12 @@ class EncryptionPanel(SlidePanel):
                                    text='Reset',
                                    text_color=color,
                                    font=font,
-                                   # fg_color="#A52D24",  # red ok #B53127 /
+                                   hover_color="green",
+                                   border_width=1,
+                                   fg_color="transparent",  # red ok #B53127 /
                                    corner_radius=5,
                                    width=50,
                                    height=28,
-                                   hover_color="green",
                                    # command=self.reset,
                                    )
         self.reset.place(anchor="ne", relx=1)
@@ -177,8 +178,8 @@ class EncryptionPanel(SlidePanel):
         self.key_entry.configure(state="disabled")
         self.decrypt_button.configure(state="disabled")
         # enable view end of string in entry
-        i = len(self.output_path_var.get())
-        self.output_path_entry.xview(i)
+        # i = len(self.output_path_var.get())
+        # self.output_path_entry.xview(i)
 
     def decrypt_file(self):
 
@@ -224,15 +225,15 @@ class EncryptionPanel(SlidePanel):
 
     # noinspection PyUnusedLocal
     def check_to_enable_button(self, *args):
-        print("check both")
+        print("check BOTH")
         valide_key = len(self.key_var.get()) > 0
         valide_path = os.path.exists(self.path_var.get())
         if valide_key and valide_path:
-            self.decrypt_button.configure(state="normal",
+            self.encrypt_button.configure(state="normal",
                                           hover=True,
                                           hover_color="green")
 
-            self.encrypt_button.configure(state="normal",
+            self.decrypt_button.configure(state="normal",
                                           hover=True,
                                           hover_color="green")
 
@@ -254,7 +255,7 @@ class EncryptionPanel(SlidePanel):
 
     # noinspection PyUnusedLocal
     def check_key(self, *args):
-        print("check key")
+        print("check KEY")
         key = self.key_var.get()
         new_key = ""
         if len(key) > 0:
@@ -271,8 +272,8 @@ class EncryptionPanel(SlidePanel):
             if key == "":
                 key = "La cle ne peu pas être vide"
                 self.key_entry.configure(border_color="red")
-
-        self.key_var.set(key)
+        if new_key != key:
+            self.key_var.set(key)
         self.file.configure(key=self.key_var.get())
 
         self.check_to_enable_button()
@@ -284,7 +285,7 @@ class EncryptionPanel(SlidePanel):
         enable/disable "encrypt"/"decrypt" buttons depending on validity
 
         """
-        print("check path")
+        print("check PATH")
         path = self.path_var.get()
         path_exist = os.path.exists(path)
 
@@ -301,8 +302,8 @@ class EncryptionPanel(SlidePanel):
         # enable view end of string in entry
         i = len(self.path_var.get())
         self.path_entry.xview(i)
-
         self.file.configure(input_path=path)
+        self.check_key()
         self.check_to_enable_button()
 
     def popup_open_file(self):
@@ -318,28 +319,23 @@ class EncryptionPanel(SlidePanel):
         self.path_var.set(path)
 
     def popup_save(self):
-        # Show some positive message with the checkmark icon
-        msg = CTkMessagebox(cancel_button="none",
-                            message="Le fichier a été sauvegardé avec succès",
-                            icon="check",
-                            option_1="OK",
-                            option_2="Annuler")
-        if msg.get() == "Annuler":
-            print("Annuler")
-        else:
+        """
+        popup window to choose directory and file name
+        """
+        path = os.getcwd().replace("\\", "/")
+        file_name = self.file.output_path.replace(path, "").replace("/", "")
+        path = fd.asksaveasfilename(initialdir=f"{os.getcwd()}",  # "/" means root directory
+                                    initialfile=file_name,
+                                    defaultextension=".txt",
+                                    filetypes=[("Text files", "*.txt")],
+                                    title="Sauvegarde")
+
+        if path:
+            self.file.output_path = path
             self.file.save()
 
-    # def reset(self):
-    #     start = self.end_pos
-    #     end = self.start_pos
-    #     font = self.font
-    #     color = self.color
-    #     master = self.master
-    #     self.__init__(master, start, end, font, color)
-    #     self.destroy()
-    def save(self):
-        self.popup_save()
-
+    # def save(self):
+    #     self.popup_save()
 
     # def __init__():
     #     super().__init__(master, start, end)

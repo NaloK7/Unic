@@ -57,7 +57,7 @@ class Encryption:
         crypt texte file using key
         return encrypted text
         """
-        # check if work with non alphabetic characters in key
+        # check if work with non-alphabetic characters in key
         text = self.strip_accents()
         up_txt = text.upper()
         ck = self.key.upper()
@@ -85,7 +85,8 @@ class Encryption:
         self.state = True
         return self.output_txt
 
-    def re_match(self, string):
+    @staticmethod
+    def re_match(string):
         pattern = "(\(\d+\))?\.txt$"
         match = re.search(pattern, string)
         if match:
@@ -149,6 +150,7 @@ class Encryption:
 
     def save(self):
         path = self.output_path
+        print(path)
         path_key = self.output_path.replace(".txt", "_key.txt")
         path_key = self.rename_file(path_key)
         with open(path, "w", encoding="utf-8") as new_file:
