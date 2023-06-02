@@ -150,10 +150,10 @@ class Encryption:
 
     def save(self):
         path = self.output_path
-        print(path)
-        path_key = self.output_path.replace(".txt", "_key.txt")
-        path_key = self.rename_file(path_key)
         with open(path, "w", encoding="utf-8") as new_file:
             new_file.write(self.output_txt)
+
+        path_key = self.output_path.replace(".txt", "_key.txt")
+        # path_key = self.rename_file(path_key)
         with open(path_key, "w", encoding="utf-8") as key:
             key.write(self.key)

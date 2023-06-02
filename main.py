@@ -40,7 +40,7 @@ class UniqueApp(ctk.CTk):
                                     text_color=self.text_color,
                                     font=self.font_button,
                                     # fg_color="#808080",
-                                    border_width=2,
+                                    border_width=1,
                                     border_color=("black", "#DDDDDD"),
                                     command=self.move_game_panel)
 
@@ -53,7 +53,7 @@ class UniqueApp(ctk.CTk):
                                     text_color=self.text_color,
                                     font=self.font_button,
                                     # fg_color="#808080",
-                                    border_width=2,
+                                    border_width=1,
                                     border_color=("black", "#DDDDDD"),
                                     command=self.move_encryption_panel)
 
@@ -61,18 +61,19 @@ class UniqueApp(ctk.CTk):
                           rely=0.4,
                           anchor="center")
 
-        self.reset_button = ctk.CTkButton(self,
-                                          text=u"\U000027F2",
-                                          width=30,
-                                          command=self.reset_encryption_panel)
-        self.reset_button.place(relx=0.88
-                                ,
-                                rely=0.4,
-                                anchor="center")
+        # self.reset_button = ctk.CTkButton(self,
+        #                                   text=u"\U000027F2",
+        #                                   width=30,
+        #                                   command=self.reset_encryption_panel)
+        # self.reset_button.place(relx=0.88
+        #                         ,
+        #                         rely=0.4,
+        #                         anchor="center")
 
     def reset_encryption_panel(self):
         self.encryption_panel.destroy()
         self.encryption_panel = EncryptionPanel(self, 1.0, 0.5, self.font_button, self.text_color)
+        self.move_encryption_panel()
 
     def move_game_panel(self):
         if not self.encryption_panel.is_hide:
