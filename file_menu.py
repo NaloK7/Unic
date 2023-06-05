@@ -58,8 +58,8 @@ class FileMenu:
 
     def optionmenu_callback(self, choice):
         if choice == "Light" or "Dark":
-            self.change_appearance_to_light(choice)
+            self.change_appearance(choice)
 
-    def change_appearance_to_light(self, choice):
+    def change_appearance(self, choice):
         ctk.set_appearance_mode(choice)
         self.appearance_option.set("   Apparence")

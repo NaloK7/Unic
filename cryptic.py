@@ -38,7 +38,6 @@ class Encryption:
                 self.input_txt = f.read()
 
     def strip_accents(self):
-
         """
         remove accents from text
         """
@@ -98,33 +97,31 @@ class Encryption:
         input_path = self.re_match(self.input_path)
         output_path = self.master.output_path_var.get()
         if encrypt:
-
             if input_path.endswith("_decrypted"):
                 output_path = input_path.replace("_decrypted", "_encrypted.txt")
 
             elif input_path.endswith("_encrypted"):
                 if self.master.popup_warning_crypter():
                     output_path = input_path.replace("_encrypted", "_RE-encrypted.txt")
+                return
 
             else:
                 output_path = input_path + "_encrypted.txt"
 
         else:
-            # si _encrypted.txt → _decrypted.txt
+
             if input_path.endswith("_encrypted"):
                 output_path = input_path.replace("_encrypted", "_decrypted.txt")
 
-            # si _decrypted.txt → _decrypted(X).txt
             elif input_path.endswith("_decrypted"):
                 if self.master.popup_warning_decrypter():
                     output_path = input_path.replace("_decrypted", "_RE-decrypted.txt")
+                return
 
-            # si .txt →
-            # elif input_path.endswith(".txt"):
             else:
                 if self.master.popup_warning_unencrypted():
                     output_path = input_path + "_decrypted.txt"
-
+                return
         self.output_path = self.rename_file(output_path)
         return self.output_path
 
@@ -142,6 +139,11 @@ class Encryption:
         return npf
 
     def save(self):
+        """
+        generate TWO .txt file
+        new file with encrypted/decrypted text
+        new file with key used to encrypt/decrypt
+        """
         path = self.output_path
         with open(path, "w", encoding="utf-8") as new_file:
             new_file.write(self.output_txt)

@@ -126,14 +126,7 @@ class EncryptionPanel(SlidePanel):
                                             command=self.display_popup_preview)
         self.preview_button.place(anchor="n", relx=0.725, rely=0.7)
 
-        # self.save_frame = ctk.CTkFrame(self,
-        #                                width=170,
-        #                                height=28,
-        #                                fg_color="transparent"
-        #                                )
-        # self.save_frame.place(anchor="n", relx=0.5, rely=0.85)
-
-        # save
+        # SAVE
         self.save_button = ctk.CTkButton(self,
                                          text='3. Sauvegarder',
                                          text_color=color,
@@ -169,23 +162,35 @@ class EncryptionPanel(SlidePanel):
         self.preview_popup = None
 
     def encrypt_file(self):
-
-        self.file.output_txt = self.file.encryption()
-        self.output_path_var.set(self.file.generate_output_path())
-        self.path_entry.configure(state="disabled")
-        self.key_entry.configure(state="disabled")
-        self.output_path_entry.configure(state="disabled")
-        self.decrypt_button.configure(state="disabled")
-        self.save_button.configure(state="normal")
-
-        # focus end of string in entry
-        i = len(self.output_path_var.get())
-        self.output_path_entry.xview(i)
+        """
+        generate new path
+        if potential error, open popup for user to choose
+        cancel: don't do anything
+        valid: encrypt file + freeze entry and button
+        """
+        output_path = self.file.generate_output_path()
+        if output_path is not None:
+            self.output_path_var.set(output_path)
+            self.file.output_txt = self.file.encryption()
+            self.change_state_after_crypt()
 
     def decrypt_file(self):
+        """
+        generate new path
+        if potential error, open popup for user to choose
+        cancel: don't do anything
+        valid: decrypt file + freeze entry and button
+        """
+        output_path = self.file.generate_output_path(encrypt=False)
+        if output_path is not None:
+            self.output_path_var.set(output_path)
+            self.file.output_txt = self.file.encryption(reverse=True)
+            self.change_state_after_crypt()
 
-        self.file.output_txt = self.file.encryption(reverse=True)
-        self.output_path_var.set(self.file.generate_output_path(encrypt=False))
+    def change_state_after_crypt(self):
+        """
+        freeze entry and button
+        """
         self.key_entry.configure(state="disabled")
         self.path_entry.configure(state="disabled")
         self.output_path_entry.configure(state="disabled")
@@ -198,7 +203,9 @@ class EncryptionPanel(SlidePanel):
 
     def display_popup_preview(self):
         """
-        NEED CHECK IF BETTER SOLUTION IS FOUND TO DISPLAY POPUP IN TOPLEVEL
+        display popup preview with new text
+        !!! bug with top level: don't display in front properly !!!
+        !!! check update !!!
         """
 
         if self.file.state:
@@ -227,6 +234,9 @@ class EncryptionPanel(SlidePanel):
 
     # noinspection PyUnusedLocal
     def check_to_enable_button(self, *args):
+        """
+        check strings to enable encrypt and decrypt buttons
+        """
         valide_key = len(self.key_var.get()) > 0
         valide_path = os.path.exists(self.path_var.get())
         if valide_key and valide_path:
@@ -245,7 +255,7 @@ class EncryptionPanel(SlidePanel):
     @staticmethod
     def set_key():
         """
-        generate random encryption key of 10 upper letters
+        generate random encryption key with 10 upper letters
         """
         new_key = ''.join(random.choice(string.ascii_uppercase) for _ in range(10))
 
@@ -256,6 +266,9 @@ class EncryptionPanel(SlidePanel):
 
     # noinspection PyUnusedLocal
     def check_key(self, *args):
+        """
+        check validity of key every time there is a change in text entry
+        """
         key = self.key_var.get()
         new_key = ""
         if len(key) > 0:
@@ -318,9 +331,13 @@ class EncryptionPanel(SlidePanel):
 
         self.path_var.set(path)
 
-    def popup_warning_crypter(self):
+    @staticmethod
+    def popup_warning_crypter():
+        """
+        popup window if user try to encrypt a file that seem already encrypted
+        """
         msg = CTkMessagebox(title="Warning",
-                            message="Le fichier semble deja CRYPTER, êtes vous sur de vouloir continuer?",
+                            message="Le fichier semble DEJA CRYPTER, êtes vous sur de vouloir continuer?",
                             icon="warning",
                             option_1="Annuler",
                             option_2="Continuer")
@@ -329,9 +346,13 @@ class EncryptionPanel(SlidePanel):
         if msg.get() == "Continuer":
             return True
 
-    def popup_warning_decrypter(self):
+    @staticmethod
+    def popup_warning_decrypter():
+        """
+        popup window if user try to decrypt a file that seem already decrypted
+        """
         msg = CTkMessagebox(title="Warning",
-                            message="Le fichier semble deja DECRYPTER, êtes vous sur de vouloir continuer?",
+                            message="Le fichier semble DEJA DECRYPTER, êtes vous sur de vouloir continuer?",
                             icon="warning",
                             option_1="Annuler",
                             option_2="Continuer")
@@ -340,7 +361,11 @@ class EncryptionPanel(SlidePanel):
         if msg.get() == "Continuer":
             return True
 
-    def popup_warning_unencrypted(self):
+    @staticmethod
+    def popup_warning_unencrypted():
+        """
+        popup window if user try to decrypt a file that don't seem to be encrypted
+        """
         msg = CTkMessagebox(title="Warning",
                             message="Le fichier ne semble PAS CRYPTER, êtes vous sur de vouloir continuer?",
                             icon="warning",
@@ -353,7 +378,7 @@ class EncryptionPanel(SlidePanel):
 
     def popup_save(self):
         """
-        popup window to choose directory and file name
+        popup window to choose directory and file name just before saving
         """
         path = os.getcwd().replace("\\", "/")
         file_name = self.file.output_path.replace(path, "").replace("/", "").replace(".txt", "")

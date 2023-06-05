@@ -7,6 +7,8 @@ from Puissance_4 import Puissance4Game as pg
 from file_menu import FileMenu
 from game_panel import GamePanel
 from encryption_panel import EncryptionPanel
+from PIL import ImageTk, Image
+import os
 
 
 class UniqueApp(ctk.CTk):
@@ -28,11 +30,22 @@ class UniqueApp(ctk.CTk):
         # MENU
         self.file_menu = FileMenu(self, 20)
 
+        # LOGO
+        light_logo = Image.open(f"{os.getcwd()}\img\\logo_light_r.png")
+
+        dark_logo = Image.open(f"{os.getcwd()}\img\\logo_dark_r.png")
+
+        self.img_logo = ctk.CTkImage(light_image=light_logo,
+                                     dark_image=dark_logo,
+                                     size=(450, 178))
+        self.img_label = ctk.CTkLabel(self, image=self.img_logo, text="")
+        self.img_label.place(anchor="n", relx=0.5, rely=0.07)
+
         # GAME PANEL
-        self.game_panel = GamePanel(self, 1.0, 0.6, self.font_button, self.text_color)
+        self.game_panel = GamePanel(self, 1.0, 0.55, self.font_button, self.text_color)
 
         # ENCRYPTION PANEL
-        self.encryption_panel = EncryptionPanel(self, 1.0, 0.5, self.font_button, self.text_color)
+        self.encryption_panel = EncryptionPanel(self, 1.0, 0.55, self.font_button, self.text_color)
 
         # main game button
         self.button = ctk.CTkButton(self,
@@ -45,7 +58,7 @@ class UniqueApp(ctk.CTk):
                                     command=self.move_game_panel)
 
         self.button.place(relx=0.25,
-                          rely=0.4,
+                          rely=0.45,
                           anchor="center")
         # encrypted button
         self.button = ctk.CTkButton(self,
@@ -58,17 +71,8 @@ class UniqueApp(ctk.CTk):
                                     command=self.move_encryption_panel)
 
         self.button.place(relx=0.75,
-                          rely=0.4,
+                          rely=0.45,
                           anchor="center")
-
-        # self.reset_button = ctk.CTkButton(self,
-        #                                   text=u"\U000027F2",
-        #                                   width=30,
-        #                                   command=self.reset_encryption_panel)
-        # self.reset_button.place(relx=0.88
-        #                         ,
-        #                         rely=0.4,
-        #                         anchor="center")
 
     def reset_encryption_panel(self):
         self.encryption_panel.destroy()
