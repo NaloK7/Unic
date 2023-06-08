@@ -2,6 +2,4 @@
 
 
 
-([Unic_V.0.21.exe](https://NaloK7.github.io/Unique/build/Unic_V.0.21/build/Unic_v0.21.zip))
-https://NaloK7.github.io/Unique/Unic_V.0.21/build/Unic_v0.21.zip
-[]
+[Unic_V.0.21.exe](blob:https://github.com/c86c29e9-8a27-4495-9e27-5e31afe037f8)
