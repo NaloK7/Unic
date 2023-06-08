@@ -295,3 +295,9 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm
 .ressources/
 /ressources/
+/CTkMenuBar/__init__.py
+/CTkMenuBar/dropdown_menu.py
+/CTkMenuBar/example_menubar.py
+/CTkMenuBar/menu_bar.py
+/CTkMenuBar/title_menu_win.py
+/CTkMenuBar/

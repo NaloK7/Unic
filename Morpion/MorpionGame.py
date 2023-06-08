@@ -1,7 +1,7 @@
 import pygame
 from Morpion.morpion_sprite import MorpionSprite as ms
 from player import Player
-import os
+import sys, os
 
 
 class Game:
@@ -25,16 +25,27 @@ class Game:
         self.counter = 0
 
         # player
-        self.player_X = Player("X", f"{self.current_path}\img\crossWhite.png")
-        self.player_O = Player("O", f"{self.current_path}\img\circleWhite.png")
+        cross = self.resource(f"{self.current_path}\img\crossWhite.png")
+        self.player_X = Player("X", cross)
+        circle = self.resource(f"{self.current_path}\img\circleWhite.png")
+        self.player_O = Player("O", circle)
         self.current_player = self.player_O
 
         self.game_matrice = self.matrixMorpion()
         self.win_line = ""
 
-        self.restart_image_path = f"{self.current_path}\img\\restart.png"
-        self.win_line_path = f"{self.current_path}\img\greenLine.png"
+        restart = self.resource(f"{self.current_path}\img\\restart.png")
+        self.restart_image_path = restart
+        line = self.resource(f"{self.current_path}\img\greenLine.png")
+        self.win_line_path = line
         self.reset = False
+
+    def resource(self, relative_path):
+        base_path = getattr(
+            sys,
+            '_MEIPASS',
+            os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(base_path, relative_path)
 
     def manageEvents(self):
         """

@@ -8,7 +8,7 @@ from file_menu import FileMenu
 from game_panel import GamePanel
 from encryption_panel import EncryptionPanel
 from PIL import ImageTk, Image
-import os
+import sys, os
 
 
 class UnicApp(ctk.CTk):
@@ -31,9 +31,10 @@ class UnicApp(ctk.CTk):
         self.file_menu = FileMenu(self, 20)
 
         # LOGO
-        light_logo = Image.open(f"{os.getcwd()}\img\logo_light.png")
-
-        dark_logo = Image.open(f"{os.getcwd()}\img\logo_dark.png")
+        light = self.resource(f"{os.getcwd()}\img\logo_light.png")
+        light_logo = Image.open(light)
+        dark = self.resource(f"{os.getcwd()}\img\logo_dark.png")
+        dark_logo = Image.open(dark)
 
         self.img_logo = ctk.CTkImage(light_image=light_logo,
                                      dark_image=dark_logo,
@@ -73,6 +74,13 @@ class UnicApp(ctk.CTk):
         self.button.place(relx=0.75,
                           rely=0.45,
                           anchor="center")
+
+    def resource(self, relative_path):
+        base_path = getattr(
+            sys,
+            '_MEIPASS',
+            os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(base_path, relative_path)
 
     def reset_encryption_panel(self):
         self.encryption_panel.destroy()

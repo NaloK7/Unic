@@ -1,5 +1,5 @@
 import pygame as pg
-import os
+import sys, os
 import pygame.mouse
 from player import Player
 import game_sprite as gs
@@ -16,18 +16,22 @@ class GamePuissance4:
 
         self.sprite_group = pg.sprite.Group()
 
-        self.bg_sprite = gs.FixedSprite(f"{self.current_path}\img\\background.png", self.width, self.height)
-        self.front_sprite = gs.FixedSprite(f"{self.current_path}\img\\blue_grid.png", self.width, self.height)
+        back = self.resource(f"{self.current_path}\img\\background.png")
+        self.bg_sprite = gs.FixedSprite(back, self.width, self.height)
+        grid = self.resource(f"{self.current_path}\img\\blue_grid.png")
+        self.front_sprite = gs.FixedSprite(grid, self.width, self.height)
 
+        restart = f"{self.current_path}\img\\restart.png"
         self.restart_sprite = gs.FixedSprite(
-            f"{self.current_path}\img\\restart.png",
+            restart,
             self.width,
             self.height,)
-
-        self.player_y = Player("y", f"{self.current_path}\img\yellow_token.png")
-        self.player_r = Player("r", f"{self.current_path}\img\\red_token.png")
+        yellow = f"{self.current_path}\img\yellow_token.png"
+        self.player_y = Player("y", yellow)
+        red = f"{self.current_path}\img\\red_token.png"
+        self.player_r = Player("r", red)
         self.current_player = self.player_y
-        self.winner_sp = gs.WinnerSprite(f"{self.current_path}\img\yellow_win.png", self.width, self.height)
+        self.winner_sp = gs.WinnerSprite(yellow, self.width, self.height)
         self.mouse_sprite = gs.MouseSprite(self.current_player.pict_path, self.width, self.height)
 
         self.game_matrix = self.matrixPuissance()
@@ -40,6 +44,13 @@ class GamePuissance4:
         self.clock = pg.time.Clock()
         pygame.mouse.set_visible(False)
 
+    def resource(self, relative_path):
+        base_path = getattr(
+            sys,
+            '_MEIPASS',
+            os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(base_path, relative_path)
+
     # noinspection PyMethodMayBeStatic
     def matrixPuissance(self):
         """
@@ -48,7 +59,7 @@ class GamePuissance4:
         return [[None] * 7 for _ in range(6)]
 
     def addSpriteToGroup(self, path, x, y_max):
-        print(f"-x= {x}-\n-y= {y_max}-")
+
         sprite = gs.Puissance4Sprite(path, self.width, self.height, x, y_max)
         # noinspection PyTypeChecker
         self.sprite_group.add(sprite)
