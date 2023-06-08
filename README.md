@@ -1,7 +1,7 @@
 # Unique
 
-<a href="https://github.com/NaloK7/Unique/tree/master/Unique-v0.1" title="Unic.exe" download>Download</a>
 
+<a id="raw-url" href="https://github.com/NaloK7/Unique/tree/master/Unique-v0.1/unique-V0.1.exe">Unic.exe</a>
 
 launch unique.py to test
 
