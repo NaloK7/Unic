@@ -101,7 +101,7 @@ class Encryption:
                 output_path = input_path.replace("_decrypted", "_encrypted.txt")
 
             elif input_path.endswith("_encrypted"):
-                if self.master.popup_warning_crypter():
+                if self.master.popup_warning("crypt"):
                     output_path = input_path.replace("_encrypted", "_RE-encrypted.txt")
                 return
 
@@ -114,12 +114,12 @@ class Encryption:
                 output_path = input_path.replace("_encrypted", "_decrypted.txt")
 
             elif input_path.endswith("_decrypted"):
-                if self.master.popup_warning_decrypter():
+                if self.master.popup_warning("decrypt"):
                     output_path = input_path.replace("_decrypted", "_RE-decrypted.txt")
                 return
 
             else:
-                if self.master.popup_warning_unencrypted():
+                if self.master.popup_warning("not"):
                     output_path = input_path + "_decrypted.txt"
                 return
         self.output_path = self.rename_file(output_path)

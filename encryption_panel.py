@@ -189,12 +189,19 @@ class EncryptionPanel(SlidePanel):
 
     def change_state_after_crypt(self):
         """
-        freeze entry and button
+        DISABLE:
+        path_entry
+        key_entry
+        crypt button
+        decrypt button
+        ENABLE:
+        save button
         """
         self.key_entry.configure(state="disabled")
         self.path_entry.configure(state="disabled")
         self.output_path_entry.configure(state="disabled")
         self.encrypt_button.configure(state="disabled")
+        self.decrypt_button.configure(state="disabled")
         self.save_button.configure(state="normal")
 
         # focus end of string in entry
@@ -204,7 +211,7 @@ class EncryptionPanel(SlidePanel):
     def display_popup_preview(self):
         """
         display popup preview with new text
-        !!! bug with top level: don't display in front properly !!!
+        !!! "bug" with top level: don't display in front properly !!!
         !!! check update !!!
         """
 
@@ -332,45 +339,23 @@ class EncryptionPanel(SlidePanel):
         self.path_var.set(path)
 
     @staticmethod
-    def popup_warning_crypter():
-        """
-        popup window if user try to encrypt a file that seem already encrypted
-        """
-        msg = CTkMessagebox(title="Warning",
-                            message="Le fichier semble DEJA CRYPTER, êtes vous sur de vouloir continuer?",
-                            icon="warning",
-                            option_1="Annuler",
-                            option_2="Continuer")
-        if msg.get() == "Annuler":
-            return False
-        if msg.get() == "Continuer":
-            return True
+    def popup_warning(option):
+        if option == "crypt":
+            msg = "Le fichier semble:\n DEJA CRYPTER\n\n êtes vous sur de vouloir continuer?"
+        elif option == "decrypt":
+            msg = "Le fichier semble:\n DEJA DECRYPTER\n\n êtes vous sur de vouloir continuer?"
+        elif option == "not":
+            msg = "Le fichier ne semble:\n PAS CRYPTER\n\n êtes vous sur de vouloir continuer?"
+        else:
+            msg = "erreur fatal, relancer l'application"
 
-    @staticmethod
-    def popup_warning_decrypter():
-        """
-        popup window if user try to decrypt a file that seem already decrypted
-        """
         msg = CTkMessagebox(title="Warning",
-                            message="Le fichier semble DEJA DECRYPTER, êtes vous sur de vouloir continuer?",
+                            message=msg,
                             icon="warning",
                             option_1="Annuler",
-                            option_2="Continuer")
-        if msg.get() == "Annuler":
-            return False
-        if msg.get() == "Continuer":
-            return True
+                            option_2="Continuer",
+                            cancel_button="none")
 
-    @staticmethod
-    def popup_warning_unencrypted():
-        """
-        popup window if user try to decrypt a file that don't seem to be encrypted
-        """
-        msg = CTkMessagebox(title="Warning",
-                            message="Le fichier ne semble PAS CRYPTER, êtes vous sur de vouloir continuer?",
-                            icon="warning",
-                            option_1="Annuler",
-                            option_2="Continuer")
         if msg.get() == "Annuler":
             return False
         if msg.get() == "Continuer":

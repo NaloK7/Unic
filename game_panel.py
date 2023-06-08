@@ -32,15 +32,15 @@ class GamePanel(SlidePanel):
                                               )
         self.puissance_button.place(anchor="n", relx=0.5, rely=0.1)
         # snake button ICW
-        self.snake_button = ctk.CTkButton(self,
-                                          text='Snake',
-                                          text_color=text_color,
-                                          font=font,
-                                          fg_color="#A52D24",
-                                          corner_radius=5,
-                                          width=140,
-                                          height=28,
-                                          hover_color="green",
-                                          command=master.run_morpion,
-                                          )
-        self.snake_button.place(anchor="n", relx=0.82, rely=0.1)
+        # self.snake_button = ctk.CTkButton(self,
+        #                                   text='Snake',
+        #                                   text_color=text_color,
+        #                                   font=font,
+        #                                   fg_color="#A52D24",
+        #                                   corner_radius=5,
+        #                                   width=140,
+        #                                   height=28,
+        #                                   hover_color="green",
+        #                                   command=master.run_morpion,
+        #                                   )
+        # self.snake_button.place(anchor="n", relx=0.82, rely=0.1)

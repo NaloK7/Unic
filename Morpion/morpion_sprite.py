@@ -12,8 +12,8 @@ class MorpionSprite(pygame.sprite.Sprite):
         if type_is == "player":
             length = max_size//3
             # resize image
-            image_size = (length-50, length-50)
-            self.image = pygame.transform.scale(self.image, image_size)
+            # image_size = (length, length)
+            # self.image = pygame.transform.scale(self.image, image_size)
             # associate rect to image
             self.rect = self.image.get_rect()
             self.rect.center = [pos_x * length + length // 2, pos_y * length + length // 2]
@@ -26,9 +26,9 @@ class MorpionSprite(pygame.sprite.Sprite):
             self.rect.center = [pos_x * length + length // 2, pos_y * length + length // 2]
 
         elif type_is == "restart":
-            length = 250
-            image_size = (length, length)
-            self.image = pygame.transform.scale(self.image, image_size)
+            # length = 250
+            # image_size = (length, length)
+            # self.image = pygame.transform.scale(self.image, image_size)
             self.rect = self.image.get_rect()
 
             self.rect.center = [max_size // 2, max_size // 2]

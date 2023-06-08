@@ -10,8 +10,8 @@ class GamePuissance4:
         self.current_path = os.getcwd()
         self.master = master
 
-        self.width = 933
-        self.height = 800
+        self.width = 900
+        self.height = 771
         self.screen = pg.display.set_mode((self.width, self.height))
 
         self.sprite_group = pg.sprite.Group()
@@ -22,8 +22,7 @@ class GamePuissance4:
         self.restart_sprite = gs.FixedSprite(
             f"{self.current_path}\img\\restart.png",
             self.width,
-            self.height,
-            restart=True)
+            self.height,)
 
         self.player_y = Player("y", f"{self.current_path}\img\yellow_token.png")
         self.player_r = Player("r", f"{self.current_path}\img\\red_token.png")
@@ -49,7 +48,7 @@ class GamePuissance4:
         return [[None] * 7 for _ in range(6)]
 
     def addSpriteToGroup(self, path, x, y_max):
-
+        print(f"-x= {x}-\n-y= {y_max}-")
         sprite = gs.Puissance4Sprite(path, self.width, self.height, x, y_max)
         # noinspection PyTypeChecker
         self.sprite_group.add(sprite)

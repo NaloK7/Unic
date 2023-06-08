@@ -11,7 +11,7 @@ from PIL import ImageTk, Image
 import os
 
 
-class UniqueApp(ctk.CTk):
+class UnicApp(ctk.CTk):
     """
     encryption window
     """
@@ -24,16 +24,16 @@ class UniqueApp(ctk.CTk):
         # window name
         self.title("Unique")
 
-        self.text_color = "#E0E0E0"
+        self.text_color = "white" #E0E0E0"
         self.font_button = ("default", 12, "bold")
 
         # MENU
         self.file_menu = FileMenu(self, 20)
 
         # LOGO
-        light_logo = Image.open(f"{os.getcwd()}\img\\logo_light_r.png")
+        light_logo = Image.open(f"{os.getcwd()}\img\logo_light.png")
 
-        dark_logo = Image.open(f"{os.getcwd()}\img\\logo_dark_r.png")
+        dark_logo = Image.open(f"{os.getcwd()}\img\logo_dark.png")
 
         self.img_logo = ctk.CTkImage(light_image=light_logo,
                                      dark_image=dark_logo,
@@ -54,7 +54,7 @@ class UniqueApp(ctk.CTk):
                                     font=self.font_button,
                                     # fg_color="#808080",
                                     border_width=1,
-                                    border_color=("black", "#DDDDDD"),
+                                    border_color=("#DDDDDD", "black"),
                                     command=self.move_game_panel)
 
         self.button.place(relx=0.25,
@@ -67,7 +67,7 @@ class UniqueApp(ctk.CTk):
                                     font=self.font_button,
                                     # fg_color="#808080",
                                     border_width=1,
-                                    border_color=("black", "#DDDDDD"),
+                                    border_color=("#DDDDDD", "black"),
                                     command=self.move_encryption_panel)
 
         self.button.place(relx=0.75,
@@ -102,5 +102,3 @@ class UniqueApp(ctk.CTk):
         game.run()
 
 
-test = UniqueApp()
-test.mainloop()

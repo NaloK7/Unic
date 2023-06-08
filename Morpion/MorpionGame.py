@@ -16,7 +16,7 @@ class Game:
         self.height = self.size
 
         self.screen = pygame.display.set_mode((self.width, self.height))
-
+        pygame.display.set_caption("Morpion")
         # sprite groupe
         self.sprite_group = pygame.sprite.Group()
 

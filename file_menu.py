@@ -1,5 +1,5 @@
 import customtkinter as ctk
-
+from CTkMessagebox import CTkMessagebox
 
 class FileMenu:
     """
@@ -21,8 +21,9 @@ class FileMenu:
                                          width=85,
                                          height=20,
                                          corner_radius=0,
-                                         values=["Aide"],
+                                         values=["About"],
                                          text_color="white",
+                                         command=self.optionmenu_callback,
                                          )  # put self.options.set("   Fichier") in callback function
         self.options.place(x=0,
                            y=0,
@@ -57,9 +58,19 @@ class FileMenu:
                               relwidth=1)
 
     def optionmenu_callback(self, choice):
+
         if choice == "Light" or "Dark":
             self.change_appearance(choice)
+        if choice == "About":
+            self.options.set("   Fichier")
+            self.popup_about()
 
     def change_appearance(self, choice):
         ctk.set_appearance_mode(choice)
         self.appearance_option.set("   Apparence")
+
+    def popup_about(self):
+        msg = CTkMessagebox(title="About",
+                            message="V0.2",
+                            cancel_button="none")
+        msg.button_1.grid(row=2, column=2, sticky="news", padx=(0,10), pady=10)
