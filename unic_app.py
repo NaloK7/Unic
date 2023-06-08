@@ -20,7 +20,7 @@ class UnicApp(ctk.CTk):
         super().__init__()
         # size
         self.geometry("800x600")
-        # self.resizable(width=False, height=False)
+        self.resizable(width=False, height=False)
         # window name
         self.title("Unique")
 
