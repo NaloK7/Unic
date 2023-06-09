@@ -22,7 +22,9 @@ class UnicApp(ctk.CTk):
         self.geometry("800x600")
         self.resizable(width=False, height=False)
         # window name
-        self.title("Unique")
+        self.title("")
+        icon = self.resource(f"{os.getcwd()}\img\icon.ico")
+        self.iconbitmap(icon)
 
         self.text_color = "white" #E0E0E0"
         self.font_button = ("default", 12, "bold")
