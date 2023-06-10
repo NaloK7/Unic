@@ -303,3 +303,6 @@ pyrightconfig.json
 /CTkMenuBar/
 /output/
 /output/img/
+.build
+/build/
+/build/*
