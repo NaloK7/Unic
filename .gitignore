@@ -301,3 +301,5 @@ pyrightconfig.json
 /CTkMenuBar/menu_bar.py
 /CTkMenuBar/title_menu_win.py
 /CTkMenuBar/
+/output/
+/output/img/
